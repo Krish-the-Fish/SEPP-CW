@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.6.0">
   <diagram name="Page-1" id="B6QjI9ehsg9F_bJQg5za">
-    <mxGraphModel dx="1415" dy="909" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="622" dy="400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -51,7 +51,7 @@
         <mxCell id="FGT2m5j3WPv3eCbQ3cIy-18" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
           <mxGeometry height="70" width="20" x="620" y="480" as="geometry" />
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-19" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-18" value="checkIfMessageEmpty()">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-19" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-18" value="checkIfMessageEmpty(message)">
           <mxGeometry relative="1" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
@@ -61,8 +61,8 @@
             <mxPoint x="630" y="460" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-20" edge="1" parent="1" source="FGT2m5j3WPv3eCbQ3cIy-18" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="messageEmptyStatus =&amp;nbsp;&lt;span style=&quot;text-align: left;&quot;&gt;checkIfMessageEmpty()&lt;/span&gt;&amp;nbsp;">
-          <mxGeometry relative="1" y="60" as="geometry">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-20" edge="1" parent="1" source="FGT2m5j3WPv3eCbQ3cIy-18" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="messageEmptyStatus =&amp;nbsp;&lt;span style=&quot;text-align: left;&quot;&gt;checkIfMessageEmpty(message)&lt;/span&gt;&amp;nbsp;">
+          <mxGeometry relative="1" y="80" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="710" y="530" />
