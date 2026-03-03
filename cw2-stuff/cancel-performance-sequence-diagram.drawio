@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.6.0">
   <diagram name="Page-1" id="B6QjI9ehsg9F_bJQg5za">
-    <mxGraphModel dx="622" dy="400" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="677" dy="435" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -35,7 +35,7 @@
             <mxPoint x="940" y="370" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-11" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="validPerformanceID = performanceIDValidStatus()">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-11" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="validPerformanceID">
           <mxGeometry relative="1" as="geometry">
             <mxPoint as="offset" />
             <mxPoint x="940" y="420" as="sourcePoint" />
@@ -159,7 +159,7 @@
         <mxCell id="FGT2m5j3WPv3eCbQ3cIy-47" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="[else]" vertex="1">
           <mxGeometry height="26" width="80" x="270" y="1624" as="geometry" />
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-48" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=0.643;exitDx=0;exitDy=0;exitPerimeter=0;" value="confirmPerformanceCancellationSuccess()">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-48" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;exitX=0;exitY=0.643;exitDx=0;exitDy=0;exitPerimeter=0;" value="confirmationOfPerformanceCancellationSuccessMessage">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="609.9999999999998" y="1540" as="sourcePoint" />
             <mxPoint x="235" y="1540" as="targetPoint" />
@@ -186,7 +186,7 @@
         <mxCell id="FGT2m5j3WPv3eCbQ3cIy-56" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
           <mxGeometry height="60" width="20" x="2230" y="1850" as="geometry" />
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-57" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-56" value="processRefundRequests()">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-57" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-56" value="processRefundRequests(&lt;span style=&quot;font-size: 12px;&quot;&gt;applicableBookingRecords&lt;/span&gt;)">
           <mxGeometry relative="1" as="geometry">
             <Array as="points">
               <mxPoint x="2275" y="1800" />
@@ -195,8 +195,8 @@
             <mxPoint x="2240" y="1800" as="sourcePoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-58" edge="1" parent="1" source="FGT2m5j3WPv3eCbQ3cIy-56" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="refundSuccessStatus = processRefundRequests">
-          <mxGeometry relative="1" x="0.1" y="50" as="geometry">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-58" edge="1" parent="1" source="FGT2m5j3WPv3eCbQ3cIy-56" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="&lt;span&gt;refundSuccessStatus = processRefundRequests(&lt;span style=&quot;font-size: 12px; text-align: left;&quot;&gt;applicableBookingRecords&lt;/span&gt;)&lt;/span&gt;">
+          <mxGeometry relative="1" x="0.1" y="130" as="geometry">
             <mxPoint as="offset" />
             <Array as="points">
               <mxPoint x="2320" y="1890" />
