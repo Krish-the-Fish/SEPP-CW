@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.6.0">
   <diagram name="Page-1" id="e1Zt0-Rqq5JsIVtCvzqH">
-    <mxGraphModel dx="1945" dy="1250" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
+    <mxGraphModel dx="1356" dy="667" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="850" pageHeight="1100" math="0" shadow="0">
       <root>
         <mxCell id="0" />
         <mxCell id="1" parent="0" />
@@ -226,17 +226,17 @@
         <mxCell id="C0iSWLfO5iCubqH4rQve-66" parent="1" style="text;whiteSpace=wrap;html=1;" value="&lt;span style=&quot;color: rgb(255, 255, 255); font-family: Helvetica; font-style: normal; font-variant-ligatures: normal; font-variant-caps: normal; letter-spacing: normal; orphans: 2; text-align: center; text-indent: 0px; text-transform: none; widows: 2; word-spacing: 0px; -webkit-text-stroke-width: 0px; white-space: nowrap; text-decoration-thickness: initial; text-decoration-style: initial; text-decoration-color: initial; float: none; display: inline !important;&quot;&gt;&lt;font style=&quot;font-size: 11px;&quot;&gt;&amp;lt;&amp;lt;create&amp;gt;&amp;gt; (aStudent, bookingNumber, numTickets,&amp;nbsp; performanceID)&lt;/font&gt;&lt;/span&gt;" vertex="1">
           <mxGeometry height="40" width="430" x="900" y="2120" as="geometry" />
         </mxCell>
-        <mxCell id="C0iSWLfO5iCubqH4rQve-70" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="C0iSWLfO5iCubqH4rQve-6" value="redirectToExternalPaymentSystem(aStudent, performance, numTickets)">
+        <mxCell id="C0iSWLfO5iCubqH4rQve-70" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" value="redirectToExternalPaymentSystem(aStudent, specificPerformance, numTickets)">
           <mxGeometry relative="1" width="80" x="0.0013" as="geometry">
             <mxPoint as="offset" />
-            <mxPoint x="490" y="1970" as="sourcePoint" />
-            <mxPoint x="1080" y="1970" as="targetPoint" />
+            <mxPoint x="490" y="1930" as="sourcePoint" />
+            <mxPoint x="1440" y="1930" as="targetPoint" />
           </mxGeometry>
         </mxCell>
-        <mxCell id="C0iSWLfO5iCubqH4rQve-71" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="C0iSWLfO5iCubqH4rQve-3" value="paymenSuccessStatus = paymentSuccessful()">
+        <mxCell id="C0iSWLfO5iCubqH4rQve-71" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="paymenSuccessStatus = paymentSuccessful()">
           <mxGeometry relative="1" as="geometry">
-            <mxPoint x="1440" y="2070" as="sourcePoint" />
-            <mxPoint x="850" y="2070" as="targetPoint" />
+            <mxPoint x="1440" y="2080" as="sourcePoint" />
+            <mxPoint x="490" y="2080" as="targetPoint" />
           </mxGeometry>
         </mxCell>
         <mxCell id="C0iSWLfO5iCubqH4rQve-72" parent="1" style="shape=umlFrame;whiteSpace=wrap;html=1;pointerEvents=0;" value="alt" vertex="1">
@@ -330,6 +330,46 @@
           <mxGeometry relative="1" width="80" as="geometry">
             <mxPoint x="2360" y="2810" as="sourcePoint" />
             <mxPoint x="2440" y="2810" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-1" parent="1" style="shape=umlLifeline;perimeter=lifelinePerimeter;whiteSpace=wrap;html=1;container=1;dropTarget=0;collapsible=0;recursiveResize=0;outlineConnect=0;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="&amp;lt;&amp;lt;external&amp;gt;&amp;gt; paymentAPI: PaymentAPI" vertex="1">
+          <mxGeometry height="1720" width="240" x="1680" y="220" as="geometry" />
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-2" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="140" width="25" x="1790" y="1940" as="geometry" />
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-3" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=block;curved=0;rounded=0;" target="3yTmNP885aUXgHjGR__M-2" value="&lt;font style=&quot;font-size: 10px;&quot;&gt;redirectToPaymentSystem(aStudent, specificPerformance, numTickets)&lt;/font&gt;">
+          <mxGeometry relative="1" width="80" as="geometry">
+            <mxPoint x="1450" y="1960" as="sourcePoint" />
+            <mxPoint x="1530" y="1960" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-4" parent="1" style="html=1;points=[[0,0,0,0,5],[0,1,0,0,-5],[1,0,0,0,5],[1,1,0,0,-5]];perimeter=orthogonalPerimeter;outlineConnect=0;targetShapes=umlLifeline;portConstraint=eastwest;newEdgeStyle={&quot;curved&quot;:0,&quot;rounded&quot;:0};" value="" vertex="1">
+          <mxGeometry height="40" width="10" x="1810" y="1990" as="geometry" />
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-5" edge="1" parent="1" style="html=1;align=left;spacingLeft=2;endArrow=block;rounded=0;edgeStyle=orthogonalEdgeStyle;curved=0;rounded=0;" target="3yTmNP885aUXgHjGR__M-4" value="processPayment()">
+          <mxGeometry relative="1" as="geometry">
+            <Array as="points">
+              <mxPoint x="1845" y="2000" />
+            </Array>
+            <mxPoint x="1815" y="1970" as="sourcePoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-6" edge="1" parent="1" source="3yTmNP885aUXgHjGR__M-4" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" value="paymentSuccessStatus = processPayment()">
+          <mxGeometry relative="1" y="45" as="geometry">
+            <mxPoint as="offset" />
+            <Array as="points">
+              <mxPoint x="1895" y="2020" />
+              <mxPoint x="1895" y="2050" />
+            </Array>
+            <mxPoint x="1895" y="2050" as="sourcePoint" />
+            <mxPoint x="1810" y="2050" as="targetPoint" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="3yTmNP885aUXgHjGR__M-7" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="C0iSWLfO5iCubqH4rQve-6" value="paymentSucessStatus">
+          <mxGeometry relative="1" as="geometry">
+            <mxPoint x="1790" y="2070" as="sourcePoint" />
+            <mxPoint x="1710" y="2070" as="targetPoint" />
           </mxGeometry>
         </mxCell>
       </root>
