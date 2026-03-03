@@ -224,7 +224,7 @@
         <mxCell id="FGT2m5j3WPv3eCbQ3cIy-64" parent="1" style="text;align=center;fontStyle=1;verticalAlign=middle;spacingLeft=3;spacingRight=3;strokeColor=none;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;html=1;" value="[refunds successful]" vertex="1">
           <mxGeometry height="26" width="80" x="320" y="2130" as="geometry" />
         </mxCell>
-        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-65" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-2" value="refundsAndCancellationSuccessfulMessage()">
+        <mxCell id="FGT2m5j3WPv3eCbQ3cIy-65" edge="1" parent="1" style="html=1;verticalAlign=bottom;endArrow=open;dashed=1;endSize=8;curved=0;rounded=0;" target="FGT2m5j3WPv3eCbQ3cIy-2" value="refundsAndCancellationSuccessfulMessage">
           <mxGeometry relative="1" as="geometry">
             <mxPoint x="610" y="2210" as="sourcePoint" />
             <mxPoint x="530" y="2210" as="targetPoint" />
