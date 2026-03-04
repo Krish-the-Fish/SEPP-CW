@@ -1,6 +1,6 @@
 <mxfile host="app.diagrams.net" agent="Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/145.0.0.0 Safari/537.36 Edg/145.0.0.0" version="29.6.0">
   <diagram id="C5RBs43oDa-KdzZeNtuy" name="Page-1">
-    <mxGraphModel dx="1700" dy="1779" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
+    <mxGraphModel dx="1576" dy="1692" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="827" pageHeight="1169" math="0" shadow="0">
       <root>
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-0" />
         <mxCell id="WIyWlLk6GJQsqaUBKTNV-1" parent="WIyWlLk6GJQsqaUBKTNV-0" />
@@ -299,15 +299,15 @@
           <mxGeometry relative="1" as="geometry" />
         </mxCell>
         <mxCell id="RFtPYYj7SYtNDEzpa5uK-136" parent="WIyWlLk6GJQsqaUBKTNV-1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=30;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" value="BookingHandler" vertex="1">
-          <mxGeometry height="220" width="690" x="1500" y="-570" as="geometry">
+          <mxGeometry height="240" width="690" x="1500" y="-570" as="geometry">
             <mxRectangle height="26" width="160" x="230" y="140" as="alternateBounds" />
           </mxGeometry>
         </mxCell>
         <mxCell id="RFtPYYj7SYtNDEzpa5uK-140" parent="RFtPYYj7SYtNDEzpa5uK-136" style="line;html=1;strokeWidth=1;align=left;verticalAlign=middle;spacingTop=-1;spacingLeft=3;spacingRight=3;rotatable=0;labelPosition=right;points=[];portConstraint=eastwest;" value="" vertex="1">
           <mxGeometry height="40" width="690" y="30" as="geometry" />
         </mxCell>
-        <mxCell id="RFtPYYj7SYtNDEzpa5uK-142" parent="RFtPYYj7SYtNDEzpa5uK-136" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rounded=0;shadow=0;html=0;" value="+ cancelBooking(student: Student, booking: Booking): String&#xa;- generateBookingNumber(existingBookingNumbers: List&lt;String&gt;): String&#xa;+ createBookingRecord(student: Student, bookingNumber: String, numTickets: int, performanceID: String): BookingRecord&#xa;- redirectForPayment(aStudent: Student, specificPerformance: Performance, numTickets: int): boolean&#xa;- verifyPerformanceID(performanceID: String): boolean&#xa;+ checkTicketed(performanceID: String, events: List&lt;Event&gt;): boolean&#xa;+ requestPerformanceObject(performanceID: String, events: List&lt;Event&gt;): Performance&#xa;+ checkRequestedTicketCountValid(numTickets: Integer, performance: Performance): boolean &#xa;+ requestExistingBookingNumbers(bookingRecords: List&lt;BookingRecord&gt;): List&lt;String&gt;&#xa;+ sendRecordToRepository(bookingRecord: BookingRecord, dataRepository: Storage): void  &#xa;&#xa;" vertex="1">
-          <mxGeometry height="150" width="690" y="70" as="geometry" />
+        <mxCell id="RFtPYYj7SYtNDEzpa5uK-142" parent="RFtPYYj7SYtNDEzpa5uK-136" style="text;align=left;verticalAlign=top;spacingLeft=4;spacingRight=4;overflow=hidden;rotatable=0;points=[[0,0.5],[1,0.5]];portConstraint=eastwest;rounded=0;shadow=0;html=0;" value="+ cancelBooking(student: Student, booking: Booking): String&#xa;- generateBookingNumber(existingBookingNumbers: List&lt;String&gt;): String&#xa;+ createBookingRecord(student: Student, bookingNumber: String, numTickets: int, performanceID: String): BookingRecord&#xa;- redirectForPayment(aStudent: Student, specificPerformance: Performance, numTickets: int): boolean&#xa;- verifyPerformanceID(performanceID: String): boolean&#xa;+ checkTicketed(performanceID: String, events: List&lt;Event&gt;): boolean&#xa;+ requestPerformanceObject(performanceID: String, events: List&lt;Event&gt;): Performance&#xa;+ checkRequestedTicketCountValid(numTickets: Integer, performance: Performance): boolean &#xa;+ requestExistingBookingNumbers(bookingRecords: List&lt;BookingRecord&gt;): List&lt;String&gt;&#xa;+ sendRecordToRepository(bookingRecord: BookingRecord, dataRepository: Storage): void  &#xa;+ addBookingToStudentBookingList(student: Student, booking: Booking)&#xa;&#xa;&#xa;" vertex="1">
+          <mxGeometry height="170" width="690" y="70" as="geometry" />
         </mxCell>
         <mxCell id="RFtPYYj7SYtNDEzpa5uK-161" parent="WIyWlLk6GJQsqaUBKTNV-1" style="swimlane;fontStyle=1;align=center;verticalAlign=top;childLayout=stackLayout;horizontal=1;startSize=26;horizontalStack=0;resizeParent=1;resizeLast=0;collapsible=1;marginBottom=0;rounded=0;shadow=0;strokeWidth=1;" value="Storage" vertex="1">
           <mxGeometry height="107" width="200" x="943" y="-47" as="geometry">
