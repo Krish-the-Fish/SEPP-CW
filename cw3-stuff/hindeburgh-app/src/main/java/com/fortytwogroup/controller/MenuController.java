@@ -1,6 +1,7 @@
 package com.fortytwogroup.controller;
 
 import com.fortytwogroup.model.User;
+import com.fortytwogroup.view.TextUserInterface;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -40,37 +41,46 @@ public class MenuController extends Controller {
   private final UserController userController;
   private final EventPerformanceController eventPerformanceController;
   private final BookingController bookingController;
+  private final TextUserInterface UI;
 
   public MenuController(
         UserController userController,
         EventPerformanceController eventPerformanceController,
-        BookingController bookingController) {
+        BookingController bookingController,
+        TextUserInterface UI) {
     this.userController = userController;
     this.eventPerformanceController = eventPerformanceController;
     this.bookingController = bookingController;
+    this.UI = UI;
   }
 
   public void mainMenu() {
+    boolean validCommand = false;
+
     if (checkCurrentUserIsGuest()) {
       // Something supposed to happen with the boolean output?
-      boolean out = handleGuestMainMenu();
+      validCommand = handleGuestMainMenu();
     }
     else if (checkCurrentUserIsStudent()) {
-      boolean out = handleStudentMainMenu();
+      validCommand = handleStudentMainMenu();
     }
     else if (checkCurrentUserIsEntertainmentProvider()) {
-      boolean out = handleEntertainmentProviderMainMenu();
+      validCommand = handleEntertainmentProviderMainMenu();
     }
     else if (checkCurrentUserIsAdmin()) {
-      boolean out = handleAdminStaffMainMenu();
+      validCommand = handleAdminStaffMainMenu();
+    }
+
+    if (!validCommand) {
+      UI.displayError("Invalid command");
     }
   }
 
   private boolean handleGuestMainMenu(){
-    //Placeholder Input
-    String input = "";
+    //Placeholder input prompt
+    String userInput = UI.getInput("Enter input: ");
 
-    int choice = selectFromMenu(Arrays.stream(GuestMenuOptions.values()).toList(), input);
+    int choice = selectFromMenu(Arrays.stream(GuestMenuOptions.values()).toList(), userInput);
 
     return switch (choice) {
       case 0 -> {
@@ -86,10 +96,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleStudentMainMenu(){
-    //Placeholder Input
-    String input = "";
+    //Placeholder input prompt
+    String userInput = UI.getInput("Enter input: ");
 
-    int choice = selectFromMenu(Arrays.stream(StudentMenuOptions.values()).toList(), input);
+    int choice = selectFromMenu(Arrays.stream(StudentMenuOptions.values()).toList(), userInput);
 
     return switch (choice) {
       case 0 -> {
@@ -125,10 +135,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleEntertainmentProviderMainMenu(){
-    //Placeholder Input
-    String input = "";
+    //Placeholder input prompt
+    String userInput = UI.getInput("Enter input: ");
 
-    int choice = selectFromMenu(Arrays.stream(EPMenuOptions.values()).toList(), input);
+    int choice = selectFromMenu(Arrays.stream(EPMenuOptions.values()).toList(), userInput);
 
     return switch (choice) {
       case 0 -> {
@@ -156,10 +166,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleAdminStaffMainMenu(){
-    //Placeholder Input
-    String input = "";
+    //Placeholder input prompt
+    String userInput = UI.getInput("Enter input: ");
 
-    int choice = selectFromMenu(Arrays.stream(AdminMenuOptions.values()).toList(), input);
+    int choice = selectFromMenu(Arrays.stream(AdminMenuOptions.values()).toList(), userInput);
 
     return switch (choice) {
       case 0 -> {
