@@ -8,7 +8,8 @@ public class StudentPreferences {
   public boolean preferSportsEvents;
 
   public boolean updatePreferences(String studentRawStringPreferences) {
-
-      return true;
+    //assuming that preferences string is in the form "Music Dance Sports"
+    
+    return true;
   }
 }

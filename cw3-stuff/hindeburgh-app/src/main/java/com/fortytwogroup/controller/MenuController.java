@@ -1,5 +1,7 @@
 package com.fortytwogroup.controller;
 
+import com.fortytwogroup.model.User;
+
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -35,16 +37,20 @@ public class MenuController extends Controller {
     CANCEL_BOOKING
   }
 
-  // Unsure if this is the best way or location to instantiate
-  // temporary to resolve errors
-  UserController userController = new UserController();
-  EventPerformanceController eventPerformanceController = new EventPerformanceController();
-  BookingController bookingController = new BookingController();
+  private final UserController userController;
+  private final EventPerformanceController eventPerformanceController;
+  private final BookingController bookingController;
 
+  public MenuController(
+        UserController userController,
+        EventPerformanceController eventPerformanceController,
+        BookingController bookingController) {
+    this.userController = userController;
+    this.eventPerformanceController = eventPerformanceController;
+    this.bookingController = bookingController;
+  }
 
   public void mainMenu() {
-    // How are we meant to get input here?
-    
     if (checkCurrentUserIsGuest()) {
       // Something supposed to happen with the boolean output?
       boolean out = handleGuestMainMenu();
