@@ -4,7 +4,7 @@ import com.fortytwogroup.model.Booking;
 import com.fortytwogroup.model.Performance;
 import com.fortytwogroup.model.Student;
 import com.fortytwogroup.view.View;
-import external.PaymentSystem;
+import com.fortytwogroup.external.PaymentSystem;
 import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
 
@@ -18,10 +18,10 @@ public class BookingController extends Controller {
   private long nextBookingNumber;
 
   //shared with EventPerformanceController
-  private long Collection<Performance> performances;
+  private final Collection<Performance> performances;
 
-  private long View view;
-  private long PaymentSystem paymentSystem;
+  private final View view;
+  private final PaymentSystem paymentSystem;
 
   public BookingController(Collection<Performance> performances, View view, PaymentSystem paymentSystem) {
     this.nextBookingNumber = 1;
@@ -43,7 +43,7 @@ public class BookingController extends Controller {
     Performance performance = null;
     boolean possible = false;
     boolean isTicketed = true;
-    int numTicketsRequested = 0
+    int numTicketsRequested = 0;
 
     //loop: while performance == null or (possible == false and isTicketed == true)
     while (performance == null || (!possible && isTicketed)) {
