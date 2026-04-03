@@ -94,20 +94,20 @@ public class UserController extends Controller {
     String orgName,
     String businessNumber) {
 
-
-
-    return false;
+    // UNUSED PARAMETERS, COULD BE ISSUE OR SOMETHING TO TALK ABOUT IN REVIEW
+    return users.containsKey(email) && users.get(email) instanceof EntertainmentProvider;
   }
 
   public void editPreferences() {
     if (checkCurrentUserIsStudent()) {
       String preferences = textUserInterface.getInput("Preferences: ");
-      //getCurrentUser().getPreferences().updatePreferences(preferences);
+      ((Student)getCurrentUser()).getPreferenceClass().updatePreferences(preferences);
     }
   }
 
   private void addUser(User user) {
-
+    String email = user.getEmail();
+    users.put(email, user);
   }
 
   private void addPreregisteredUsers() {

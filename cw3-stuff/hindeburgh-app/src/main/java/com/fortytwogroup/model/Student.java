@@ -16,7 +16,7 @@ public class Student extends User {
     this.preferences = new StudentPreferences();
   }
 
-  public StudentPreferences getPreferences() {
+  public StudentPreferences getPreferenceClass() {
     return preferences;
   }
 
