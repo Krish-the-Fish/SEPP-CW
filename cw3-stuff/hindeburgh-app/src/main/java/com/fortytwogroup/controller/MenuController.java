@@ -41,17 +41,17 @@ public class MenuController extends Controller {
   private final UserController userController;
   private final EventPerformanceController eventPerformanceController;
   private final BookingController bookingController;
-  private final TextUserInterface UI;
+  private final TextUserInterface textUserInterface;
 
   public MenuController(
         UserController userController,
         EventPerformanceController eventPerformanceController,
         BookingController bookingController,
-        TextUserInterface UI) {
+        TextUserInterface textUserInterface) {
     this.userController = userController;
     this.eventPerformanceController = eventPerformanceController;
     this.bookingController = bookingController;
-    this.UI = UI;
+    this.textUserInterface = textUserInterface;
   }
 
   public void mainMenu() {
@@ -72,13 +72,13 @@ public class MenuController extends Controller {
     }
 
     if (!validCommand) {
-      UI.displayError("Invalid command");
+      textUserInterface.displayError("Invalid command");
     }
   }
 
   private boolean handleGuestMainMenu(){
     //Placeholder input prompt
-    String userInput = UI.getInput("Enter input: ");
+    String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(GuestMenuOptions.values()).toList(), userInput);
 
@@ -97,7 +97,7 @@ public class MenuController extends Controller {
 
   private boolean handleStudentMainMenu(){
     //Placeholder input prompt
-    String userInput = UI.getInput("Enter input: ");
+    String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(StudentMenuOptions.values()).toList(), userInput);
 
@@ -136,7 +136,7 @@ public class MenuController extends Controller {
 
   private boolean handleEntertainmentProviderMainMenu(){
     //Placeholder input prompt
-    String userInput = UI.getInput("Enter input: ");
+    String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(EPMenuOptions.values()).toList(), userInput);
 
@@ -167,7 +167,7 @@ public class MenuController extends Controller {
 
   private boolean handleAdminStaffMainMenu(){
     //Placeholder input prompt
-    String userInput = UI.getInput("Enter input: ");
+    String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(AdminMenuOptions.values()).toList(), userInput);
 
