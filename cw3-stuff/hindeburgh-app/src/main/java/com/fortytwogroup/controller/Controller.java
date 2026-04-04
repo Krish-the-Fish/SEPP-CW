@@ -8,6 +8,10 @@ import com.fortytwogroup.model.User;
 import java.util.Collection;
 
 public abstract class Controller {
+
+  public Controller() {
+
+  }
   private User currentUser = null;
 
   public void setCurrentUser(User currentUser) {

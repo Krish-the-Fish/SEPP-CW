@@ -22,16 +22,31 @@ public class Performance {
   private Collection<Integer> reviewRatings;
   private Collection<String> reviewComments;
   private PerformanceStatus status;
+  private Event event;  // reference to the event that contains the performance
+
+  // including inactive bookings in allBookings variable for possible auditing purposes
+  private Collection<Booking> allBookings;
 
   public void cancel() {
 
   }
 
   public boolean checkIfEventIsTicketed() {
-    return true;
+    Event event = getEvent();
+
+    if (event == null) {
+      return false;
+    }
+
+    return event.getIsTicketed();
   }
 
   public boolean checkIfTicketsLeft(int numTicketsToBuy) {
+    int numTicketsLeft = numTicketsTotal - numTicketsSold;
+
+    if (numTicketsToBuy > numTicketsLeft) {
+      return false;
+    }
     return true;
   }
 
@@ -40,11 +55,14 @@ public class Performance {
   }
 
   public String getOrganiserEmail(){
-    return null;
+    Event event = getEvent();
+    return event.getOrganiserEmail();  // returns epEmail
   }
 
   public String getEventTitle(){
-    return null;
+    Event event = getEvent();
+
+    return event.getEventTitle();
   }
 
   public boolean checkHasNotHappenedYet() {
@@ -72,11 +90,68 @@ public class Performance {
   }
 
   public void addBooking(Booking b) {
-    return;
+    allBookings.add(b);
   }
 
+  @Override
   public String toString() {
-      return null;
+    return "Performance ID: " + performanceId + "\n" +
+        "Start: " + startDateTime + "\n" +
+        "End: " + endDateTime + "\n" +
+        "Performers: " + String.join(", ", performerNames) + "\n" +
+        "Venue Address: " + venueAddress + "\n" +
+        "Venue Capacity: " + venueCapacity + "\n" +
+        "Outdoors: " + venueIsOutdoors + "\n" +
+        "Smoking Allowed: " + venueAllowsSmoking + "\n" +
+        "Tickets Total: " + numTicketsTotal + "\n" +
+        "Tickets Sold: " + numTicketsSold + "\n" +
+        "Ticket Price: " + ticketPrice + "\n" +
+        "Status: " + status + "\n" +
+        "All Active Bookings: "+ allBookings + "\n";
   }
+
+  /**
+   * Method chooses not to expose the collection allActiveBookings to respect privacy of
+   * students with bookings.
+   * @return String containing all the attributes in a given performance class instance apart
+   * from allActiveBookings
+   * String contains each attribute on its own line.
+   */
+  public String toStringSensitive() {
+    return "Performance ID: " + performanceId + "\n" +
+        "Start: " + startDateTime + "\n" +
+        "End: " + endDateTime + "\n" +
+        "Performers: " + String.join(", ", performerNames) + "\n" +
+        "Venue Address: " + venueAddress + "\n" +
+        "Venue Capacity: " + venueCapacity + "\n" +
+        "Outdoors: " + venueIsOutdoors + "\n" +
+        "Smoking Allowed: " + venueAllowsSmoking + "\n" +
+        "Tickets Total: " + numTicketsTotal + "\n" +
+        "Tickets Sold: " + numTicketsSold + "\n" +
+        "Ticket Price: " + ticketPrice + "\n" +
+        "Status: " + status + "\n";
+  }
+
+
+  // getter for performance ID
+  public long getPerformanceID(){
+    return performanceId;
+  }
+
+  // public since needs usage in Performance class
+  public Event getEvent() {
+    return event;
+  }
+
+
+  // public getter for numTicketsSold
+  public int getNumTicketsSold() {
+    return numTicketsSold;
+  }
+
+  public void setNumTicketsSold(int newTicketsSoldValue) {
+    numTicketsSold = newTicketsSoldValue;
+  }
+
 
 }

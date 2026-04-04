@@ -1,9 +1,12 @@
 package com.fortytwogroup.model;
 
+import java.util.Collection;
+
 public class Student extends User {
   private String name;
   private int phoneNumber;
   private StudentPreferences preferences;
+  private Collection<Booking> studentBookings;
 
   public Student(
         String name,
@@ -21,6 +24,17 @@ public class Student extends User {
   }
 
   public void addBooking(Booking booking) {
-
+    studentBookings.add(booking);
   }
+
+  // public getter for phone number
+  public int getPhoneNumber() {
+    return phoneNumber;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+
 }

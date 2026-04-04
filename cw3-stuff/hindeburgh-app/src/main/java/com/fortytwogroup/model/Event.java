@@ -10,6 +10,7 @@ public class Event {
   private String title;
   private EventType type;
   private boolean isTicketed;
+  private EntertainmentProvider entertainmentProvider;
 
   public Performance createPerformance(
       long performanceId,
@@ -38,7 +39,7 @@ public class Event {
   }
 
   public String getOrganiserEmail() {
-    return null;
+    return entertainmentProvider.getEmail();  //  calling getter within EP parent class
   }
 
   public double getAverageRatingOfPerformances() {
@@ -58,8 +59,24 @@ public class Event {
   private void addPerformance(Performance p) {
   }
 
+  /**
+   * Method deliberately omits the reference to the entertainment provider object
+   * @return String containing key fields within an Event instance
+   */
+  @Override
   public String toString() {
-    return null;
+    return "Event ID: " + eventId + "\n" +
+        "Title: " + title + "\n" +
+        "Type: " + type + "\n" +
+        "Ticketed: " + isTicketed + "\n";
   }
 
+  public boolean getIsTicketed() {
+    return isTicketed;
+  }
+
+  // public getter for event title
+  public String getEventTitle() {
+    return title;
+  }
 }
