@@ -3,6 +3,7 @@ package com.fortytwogroup.model;
 import java.time.LocalDateTime;
 import java.util.Collection;
 
+import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
 
 public class Performance {
@@ -21,8 +22,10 @@ public class Performance {
   private double sponsoredAmount;
   private Collection<Integer> reviewRatings;
   private Collection<String> reviewComments;
-  private PerformanceStatus status;
-  
+  private PerformanceStatus status = PerformanceStatus.ACTIVE;
+  private Event event;  // reference to the event that contains the performance
+  // including inactive bookings in allBookings variable for possible auditing purposes
+  private Collection<Booking> allBookings;
 
   public Performance(
     long performanceId, 
@@ -65,13 +68,9 @@ public class Performance {
   public long getPerformanceId() {
     return performanceId;
   }
-  private Event event;  // reference to the event that contains the performance
-
-  // including inactive bookings in allBookings variable for possible auditing purposes
-  private Collection<Booking> allBookings;
 
   public void cancel() {
-
+    status = PerformanceStatus.CANCELLED;
   }
 
   public boolean checkIfEventIsTicketed() {
@@ -109,31 +108,54 @@ public class Performance {
   }
 
   public boolean checkHasNotHappenedYet() {
-    return false;
+    return (LocalDateTime.now().isBefore(startDateTime));
   }
 
   public boolean checkCreatedByEP(String email) {
-    return false;
+    return (getOrganiserEmail().equals(email));
   }
 
   public boolean hasActiveBookings() {
-    return false;
+    return (numTicketsSold > 0 && status == PerformanceStatus.ACTIVE);
   }
 
   public String getBookingDetailsForRefund() {
+
+    for (Booking b : allBookings) {
+      if (b.getStatus() == BookingStatus.ACTIVE) {
+        
+        return (
+          "Student details: " + b.getStudentDetails() + "\n" +
+          "Amount paid: " + b.getAmountPaid() + "\n" +
+          "Number of tickets purchased: " + b.getNumTickets() + "\n"         
+        );
+      }
+    }
     return null;
   }
 
   public void sponsor(double amount) {
-    return;
+    if (event.getIsTicketed()) {
+      isSponsored = true;
+      sponsoredAmount = amount;
+    }
   }
 
   public void review(int rating, String comment) {
-    return;
+    if (checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
+      reviewRatings.add(rating);
+
+      if (comment != null && !comment.isEmpty()) {
+        reviewComments.add(comment);
+      }
+    }
+    // It may be necessary to have some sort of moderation for reviews unless we assume that all 
+    // reviews are in good faith and not abusive.
   }
 
   public void addBooking(Booking b) {
     allBookings.add(b);
+    numTicketsSold += b.getNumTickets();
   }
 
   @Override

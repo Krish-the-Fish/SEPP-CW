@@ -1,17 +1,15 @@
 package com.fortytwogroup.model;
 
-import com.fortytwogroup.model.enums.BookingStatus;
-import com.fortytwogroup.model.Student;
-
-import com.fortytwogroup.model.enums.PerformanceStatus;
 import java.time.LocalDateTime;
+
+import com.fortytwogroup.model.enums.BookingStatus;
 
 public class Booking {
   private long bookingNumber;
   private int numTickets;
   private double amountPaid;
   private LocalDateTime bookingDateTime;
-  private BookingStatus status;
+  private BookingStatus status = BookingStatus.ACTIVE;  // init status to active upon instantiation
   private Student student;  // including a reference to the student who made the booking
   private Performance performance;
 
@@ -36,8 +34,21 @@ public class Booking {
 
 
   }
+
+  public double getAmountPaid() {
+    return amountPaid;
+  }
+
+  public int getNumTickets() { // Getter for number of tickets booked so that we can update performance.
+    return numTickets;
+  }
+
   public void cancelByStudent() {
 
+  }
+
+  public BookingStatus getStatus() {
+    return status;
   }
 
   /**
