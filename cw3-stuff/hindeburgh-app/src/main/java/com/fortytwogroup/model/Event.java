@@ -22,6 +22,10 @@ public class Event {
     this.isTicketed = isTicketed;
   }
 
+  public long getEventId() {
+    return eventId;
+  }
+
   public Performance createPerformance(long performanceId, LocalDateTime startDateTime, LocalDateTime endDateTime,
       Collection<String> performerNames, String venueAddress, int venueCapacity, boolean venueIsOutdoors,
       boolean venueAllowsSmoking, int numTicketsTotal, double ticketPrice) {

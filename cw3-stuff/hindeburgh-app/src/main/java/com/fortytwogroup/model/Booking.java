@@ -68,7 +68,10 @@ public class Booking {
   }
 
   public String getStudentDetails() {
-    return null;
+    return (
+      "Student email: " + student.getEmail() + "\n" +
+      "Student phone: " + student.getPhoneNumber()
+    );
   }
 
   public String generateBookingRecord() {
