@@ -20,22 +20,22 @@ public class StudentPreferences {
     preferMovieEvents = false;
     preferSportsEvents = false;
 
-    String[] preferences = studentRawStringPreferences.split(" ");
+    String[] preferences = studentRawStringPreferences.split("\\s*,\\s*");
     for (String preference : preferences) {
-      switch (preference) {
-        case "Music":
+      switch (preference.toUpperCase()) {
+        case "MUSIC":
           preferMusicEvents = true;
           break;
-        case "Theatre":
+        case "THEATRE":
           preferTheatreEvents = true;
           break;
-        case "Dance":
+        case "DANCE":
           preferDanceEvents = true;
           break;
-        case "Movie":
+        case "MOVIE":
           preferMovieEvents = true;
           break;
-        case "Sports":
+        case "SPORTS":
           preferSportsEvents = true;
           break;
       }
