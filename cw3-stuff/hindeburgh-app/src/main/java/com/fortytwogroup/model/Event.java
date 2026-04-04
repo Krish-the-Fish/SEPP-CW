@@ -11,6 +11,7 @@ public class Event {
   private EventType type;
   private boolean isTicketed;
   private EntertainmentProvider entertainmentProvider;
+  private Collection<Performance> performances;
 
   public Performance createPerformance(
       long performanceId,
@@ -68,7 +69,8 @@ public class Event {
     return "Event ID: " + eventId + "\n" +
         "Title: " + title + "\n" +
         "Type: " + type + "\n" +
-        "Ticketed: " + isTicketed + "\n";
+        "Ticketed: " + isTicketed + "\n" +
+        "Performances" + performances + "\n";
   }
 
   public boolean getIsTicketed() {
