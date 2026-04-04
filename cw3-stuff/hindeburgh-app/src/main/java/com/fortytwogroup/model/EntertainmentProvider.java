@@ -23,6 +23,10 @@ public class EntertainmentProvider extends User {
     this.description = description;
   }
 
+  public String getOrgName() {
+    return orgName;
+  }
+
   public void addEvent(Event event) {
 
   }
