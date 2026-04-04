@@ -40,7 +40,8 @@ public class TextUserInterface implements View {
 
   @Override
   public void displayBookingRecord(String bookingRecord) {
-
+    System.out.println("-----Booking Record-----");
+    System.out.println(bookingRecord);
   }
 
 }
