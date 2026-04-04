@@ -1,9 +1,9 @@
 package com.fortytwogroup.model;
 
-import com.fortytwogroup.model.enums.PerformanceStatus;
-
 import java.time.LocalDateTime;
 import java.util.Collection;
+
+import com.fortytwogroup.model.enums.PerformanceStatus;
 
 public class Performance {
   private long performanceId;
@@ -22,6 +22,49 @@ public class Performance {
   private Collection<Integer> reviewRatings;
   private Collection<String> reviewComments;
   private PerformanceStatus status;
+  
+
+  public Performance(
+    long performanceId, 
+    LocalDateTime startDateTime, 
+    LocalDateTime endDateTime,
+    Collection<String> performerNames, 
+    String venueAddress, 
+    int venueCapacity, 
+    boolean venueIsOutdoors,
+    boolean venueAllowsSmoking, 
+    int numTicketsTotal, 
+    double ticketPrice 
+    
+  ) 
+  {
+    this.performanceId = performanceId;
+    this.startDateTime = startDateTime;
+    this.endDateTime = endDateTime;
+    this.performerNames = performerNames;
+    this.venueAddress = venueAddress;
+    this.venueCapacity = venueCapacity;
+    this.venueIsOutdoors = venueIsOutdoors;
+    this.venueAllowsSmoking = venueAllowsSmoking;
+    this.numTicketsTotal = numTicketsTotal;
+    this.ticketPrice = ticketPrice;
+    this.isSponsored = false;
+    this.sponsoredAmount = 0;
+    
+
+  }
+
+  public LocalDateTime getStartDateTime() {
+    return startDateTime;
+  }
+
+  public LocalDateTime getEndDateTime() {
+    return endDateTime;
+  }
+
+  public long getPerformanceId() {
+    return performanceId;
+  }
 
   public void cancel() {
 
