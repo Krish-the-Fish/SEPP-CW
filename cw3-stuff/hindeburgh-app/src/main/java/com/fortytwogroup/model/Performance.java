@@ -37,7 +37,8 @@ public class Performance {
     boolean venueIsOutdoors,
     boolean venueAllowsSmoking, 
     int numTicketsTotal, 
-    double ticketPrice 
+    double ticketPrice,
+    Event event
     
   ) 
   {
@@ -54,6 +55,7 @@ public class Performance {
     this.isSponsored = false;
     this.sponsoredAmount = 0;
     this.status = PerformanceStatus.ACTIVE;
+    this.event = event;
     
 
   }
