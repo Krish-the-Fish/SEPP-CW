@@ -14,7 +14,7 @@ public class Event {
   private EntertainmentProvider entertainmentProvider;
   private Collection<Performance> performances;
 
-  private ArrayList<Performance> performances = new ArrayList<>();
+  //private ArrayList<Performance> performances = new ArrayList<>();
 
   public Event(long eventId, String title, EventType type, boolean isTicketed) {
     this.eventId = eventId;
