@@ -58,7 +58,6 @@ public class MenuController extends Controller {
     boolean validCommand = false;
 
     if (checkCurrentUserIsGuest()) {
-      // Something supposed to happen with the boolean output?
       validCommand = handleGuestMainMenu();
     }
     else if (checkCurrentUserIsStudent()) {
@@ -77,7 +76,6 @@ public class MenuController extends Controller {
   }
 
   private boolean handleGuestMainMenu(){
-    //Placeholder input prompt
     String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(GuestMenuOptions.values()).toList(), userInput);
@@ -96,7 +94,6 @@ public class MenuController extends Controller {
   }
 
   private boolean handleStudentMainMenu(){
-    //Placeholder input prompt
     String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(StudentMenuOptions.values()).toList(), userInput);
@@ -135,7 +132,6 @@ public class MenuController extends Controller {
   }
 
   private boolean handleEntertainmentProviderMainMenu(){
-    //Placeholder input prompt
     String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(EPMenuOptions.values()).toList(), userInput);
@@ -166,7 +162,6 @@ public class MenuController extends Controller {
   }
 
   private boolean handleAdminStaffMainMenu(){
-    //Placeholder input prompt
     String userInput = textUserInterface.getInput("Enter input: ");
 
     int choice = selectFromMenu(Arrays.stream(AdminMenuOptions.values()).toList(), userInput);

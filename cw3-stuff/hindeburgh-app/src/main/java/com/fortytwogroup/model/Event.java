@@ -28,7 +28,7 @@ public class Event {
 
   public Performance createPerformance(long performanceId, LocalDateTime startDateTime, LocalDateTime endDateTime,
       Collection<String> performerNames, String venueAddress, int venueCapacity, boolean venueIsOutdoors,
-      boolean venueAllowsSmoking, int numTicketsTotal, double ticketPrice) {
+      boolean venueAllowsSmoking, int numTicketsTotal, double ticketPrice, Event event) {
         
         Performance newPerformance = new Performance(
           performanceId,
@@ -40,8 +40,8 @@ public class Event {
           venueIsOutdoors,
           venueAllowsSmoking,
           numTicketsTotal,
-          ticketPrice
-          );
+          ticketPrice,
+          event);
         
         addPerformance(newPerformance);
 

@@ -22,7 +22,7 @@ public class Performance {
   private double sponsoredAmount;
   private Collection<Integer> reviewRatings;
   private Collection<String> reviewComments;
-  private PerformanceStatus status = PerformanceStatus.ACTIVE;
+  private PerformanceStatus status;
   private Event event;  // reference to the event that contains the performance
   // including inactive bookings in allBookings variable for possible auditing purposes
   private Collection<Booking> allBookings;
@@ -37,7 +37,8 @@ public class Performance {
     boolean venueIsOutdoors,
     boolean venueAllowsSmoking, 
     int numTicketsTotal, 
-    double ticketPrice 
+    double ticketPrice,
+    Event event
     
   ) 
   {
@@ -53,6 +54,8 @@ public class Performance {
     this.ticketPrice = ticketPrice;
     this.isSponsored = false;
     this.sponsoredAmount = 0;
+    this.status = PerformanceStatus.ACTIVE;
+    this.event = event;
     
 
   }

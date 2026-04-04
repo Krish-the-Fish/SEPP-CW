@@ -9,7 +9,7 @@ public class Booking {
   private int numTickets;
   private double amountPaid;
   private LocalDateTime bookingDateTime;
-  private BookingStatus status = BookingStatus.ACTIVE;  // init status to active upon instantiation
+  private BookingStatus status;  // init status to active upon instantiation
   private Student student;  // including a reference to the student who made the booking
   private Performance performance;
 

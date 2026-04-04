@@ -1,9 +1,15 @@
 package com.fortytwogroup.controller;
 
+import com.fortytwogroup.model.Event;
+import com.fortytwogroup.model.Performance;
+import com.fortytwogroup.model.enums.EventType;
+import com.fortytwogroup.view.TextUserInterface;
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -30,7 +36,10 @@ public class EventPerformanceController extends Controller {
   public EventPerformanceController(TextUserInterface textUserInterface) {
     
     this.textUserInterface = textUserInterface;
+    this.nextEventID = 1;
+    this.nextPerformanceID = 1;
   }
+
 
 
 
@@ -91,12 +100,42 @@ public class EventPerformanceController extends Controller {
 
     // now ask EP to add performances to the event
     boolean addAnotherPerformance = true;
+    Collection<Performance> performances = new ArrayList<>();
 
+    // instantiate Event object now to make logic easier
+    // can destroy it and its performances later
+    // will add to relevant places once all checks complete and passed
+    Event event = new Event(
+        nextEventID,
+        eventTitle,
+        eventType,
+        eventIsTicketed
+    );
+
+    // now add the performances to that event
     while (addAnotherPerformance) {
+      String userInput =
+          textUserInterface.getInput("Do you wish to add another performance (yes/no): ");
 
+      if (userInput.isEmpty()){
+        textUserInterface.displayError("No response provided."
+            + "Please enter either yes or no");
+        continue;
+      }
+      else if(userInput.equalsIgnoreCase("no") && !performances.isEmpty()) {
+        addAnotherPerformance = false;
+      }
+      else if(userInput.equalsIgnoreCase("no") && performances.isEmpty()) {
+        textUserInterface.displayError("Events must have at least one performance.");
+        continue;
+      }
+      else {
+        Performance performance = getPerformanceDetailsFromEP(event);
+        performances.add(performance);
+      }
     }
 
-
+    // now need to check that event object doesn't already exist
 
   }
 
@@ -477,22 +516,82 @@ public class EventPerformanceController extends Controller {
     return null;
   }
 
-  private Performance givePerformanceDetails() {
+  private Performance getPerformanceDetailsFromEP(Event event) {
     // get and unpack date/time values
     List<LocalDateTime> startEndDate = getPerformanceDateTimeDetailsFromEP();
-    LocalDateTime startDate = startEndDate.get(0);
-    LocalDateTime endDate = startEndDate.get(1);
+    LocalDateTime startDateTime = startEndDate.get(0);
+    LocalDateTime endDateTime = startEndDate.get(1);
 
     // now check if the performance is ticketed
     boolean isTicketed = getPerformanceTicketedStatusFromEP();
 
-    // get number of tickets if event is ticketed
+    // get number of tickets and ticket price if event is ticketed
+    int numTicketsForPerformance = 0;
+    double ticketPrice = 0;
+
     if (isTicketed) {
-      int numTicketsForPerformance = getNumTicketsAvailableFromEP();
+      numTicketsForPerformance = getNumTicketsAvailableFromEP();
+      ticketPrice = getTicketPriceFromEP();
     }
 
     //
     return null;
+    // get the names of the performers from the EP
+    Collection<String> performers = getPerformerNamesFromEP();
+
+    // get the venue details from the ep as a collection of strings then unpack
+    ArrayList<String> venueDetailsAsStrings = getVenueDetailsFromEP();
+
+    int numVenueDetails = 4;
+
+    boolean venueOutdoorsStatus;  // if true, venue is outdoors
+    boolean venueSmokingStatus;  // if true, venue allows smoking
+    String venueAddress;
+    int venueCapacity;
+
+    // unpacking venue details to correct types
+    if (venueDetailsAsStrings.size() != numVenueDetails) {
+      if (venueDetailsAsStrings.getFirst().equalsIgnoreCase("outdoors")){
+        venueOutdoorsStatus = true;
+      }
+      else {
+        venueOutdoorsStatus = false;
+      }
+
+      if (venueDetailsAsStrings.get(1).equalsIgnoreCase("yes")) {
+        venueSmokingStatus = true;
+      }
+      else {
+        venueSmokingStatus = false;
+      }
+
+      venueAddress = venueDetailsAsStrings.get(2);
+
+      venueCapacity = Integer.parseInt(venueDetailsAsStrings.get(3));
+
+    }
+    else{
+      textUserInterface.displayError("internal system error");
+      return null;
+    }
+
+    // now have all the performance details we need to create the object
+    Performance newPerformance = event.createPerformance(
+        nextPerformanceID,
+        startDateTime,
+        endDateTime,
+        performers,
+        venueAddress,
+        venueCapacity,
+        venueOutdoorsStatus,
+        venueSmokingStatus,
+        numTicketsForPerformance,
+        numTicketsForPerformance,
+        event);
+
+    nextPerformanceID++;
+
+    return newPerformance;
   }
 
   private List<LocalDateTime> getPerformanceDateTimeDetailsFromEP(){
@@ -588,9 +687,203 @@ public class EventPerformanceController extends Controller {
 
   }
 
+  private double getTicketPriceFromEP() {
+
+    while(true) {
+      String ticketPriceRawString = textUserInterface.getInput(
+          "Enter the ticket price for the performance: ");
+      try{
+        double ticketPrice = Double.parseDouble(ticketPriceRawString);
+
+        if(ticketPrice <= 0) {
+          textUserInterface.displayError(
+              "Ticket price must be larger than 0");
+          continue;
+        }
+
+        // check input is not bigger than a double can store
+        if (Double.isInfinite(ticketPrice)) {
+          textUserInterface.displayError("Ticket price entered is too high");
+          continue;
+        }
+        // Need toString to avoid precision being messed up when parsed and wrapped
+        BigDecimal ticketPriceBigDecimal = new BigDecimal(Double.toString(ticketPrice));
+        if (ticketPriceBigDecimal.scale() > 2){
+          textUserInterface.displayError(
+              "Ticket price cannot have more than 2 decimal places");
+          continue;
+        }
 
 
+        // if got to here, ticket price is valid
+        return ticketPrice;
+      }
+      catch (NumberFormatException e) {
+        textUserInterface.displayError("Ticket price entered is invalid");
+      }
+    }
+  }
 
+
+  private Collection<String> getPerformerNamesFromEP(){
+
+    Collection<String> performerNames = new ArrayList<String>();
+    while(performerNames.isEmpty()) {
+      textUserInterface.getInput("Enter the performer names for the performances."
+          + "enter 'no_more_performers' when done");
+      String userInput = "";
+
+      while(
+          (userInput.isEmpty()) || !userInput.equalsIgnoreCase("no_more_performers") && !userInput.equalsIgnoreCase("'no_more_performers'")
+      ) {
+        userInput = textUserInterface.getInput("Enter performer name: ");
+
+        if (userInput.equalsIgnoreCase("no_more_performers")
+        || userInput.equalsIgnoreCase("'no_more_performers'")) {
+          break;
+        }
+        else if (userInput.isEmpty()) {
+          textUserInterface.displayError("Performer name entered is empty");
+          continue;
+        }
+        else{
+          performerNames.add(userInput);
+        }
+      }
+
+      if(performerNames.isEmpty()) {
+        textUserInterface.displayError("No performer names entered");
+        continue;
+      }
+    }
+    return performerNames;
+  }
+
+  // remember to convert to required types when unpacking string collection
+  private ArrayList<String> getVenueDetailsFromEP(){
+    textUserInterface.getInput("Enter the venue's details for the performances.");
+
+    // ask if the venue is indoors or outdoors (indoors/outdoors)
+    String outdoorsStatus = getOutdoorsStatusAsStringFromEP();
+
+    // ask if the venue allows smoking (yes/no)
+    String smokingStatus = getSmokingStatusAsStringFromEP();
+
+    // ask for the venue address
+    String venueAddressString = getVenueAddressStringFromEP();
+
+    // ask for venue capacity
+    String venueCapacityString = getVenueCapacityAsStringFromEP();
+
+    ArrayList<String> venueDetailsAsStrings = new ArrayList();
+    venueDetailsAsStrings.add(outdoorsStatus);
+    venueDetailsAsStrings.add(smokingStatus);
+    venueDetailsAsStrings.add(venueAddressString);
+    venueDetailsAsStrings.add(venueCapacityString);
+
+    return venueDetailsAsStrings;
+  }
+
+  private String getOutdoorsStatusAsStringFromEP() {
+
+    String outdoorsStatusString = "";
+
+    while(
+        outdoorsStatusString.isEmpty() || (
+        !outdoorsStatusString.equalsIgnoreCase("indoors") &&
+        !outdoorsStatusString.equalsIgnoreCase("outdoors"))
+    ) {
+      outdoorsStatusString = textUserInterface.getInput(
+          "Is the performance venue indoors or outdoors? "
+      );
+
+      if (outdoorsStatusString.isEmpty()) {
+        textUserInterface.displayError("Input is empty");
+      }
+      else if (!outdoorsStatusString.equalsIgnoreCase("indoors") &&
+          !outdoorsStatusString.equalsIgnoreCase("outdoors")){
+        textUserInterface.displayError(
+            "Your response must be either indoors or outdoors");
+      }
+
+    }
+    return outdoorsStatusString;
+  }
+
+  private String getSmokingStatusAsStringFromEP() {
+
+    String smokingStatusString = "";
+
+    while(
+        smokingStatusString.isEmpty() || (
+            !smokingStatusString.equalsIgnoreCase("yes") &&
+                !smokingStatusString.equalsIgnoreCase("no"))
+    ) {
+      smokingStatusString = textUserInterface.getInput(
+          "Does the performance venue allow smoking? "
+      );
+
+      if (smokingStatusString.isEmpty()) {
+        textUserInterface.displayError("Input is empty");
+      }
+      else if (!smokingStatusString.equalsIgnoreCase("yes") &&
+          !smokingStatusString.equalsIgnoreCase("no")){
+        textUserInterface.displayError(
+            "Your response must be either yes or no");
+      }
+
+    }
+    return smokingStatusString;
+  }
+
+  private String getVenueAddressStringFromEP() {
+    String venueAddressString = "";
+
+    while(venueAddressString.isEmpty()) {
+      venueAddressString = textUserInterface.getInput(
+          "Please enter the performance venue address: ");
+
+      if (venueAddressString.isEmpty()) {
+        textUserInterface.displayError("Input is empty");
+      }
+    }
+    return venueAddressString;
+  }
+
+
+  private String getVenueCapacityAsStringFromEP() {
+    String venueCapacityString = "";
+
+    boolean validCapacityString = false;
+    while(!validCapacityString) {
+      venueCapacityString = textUserInterface.getInput(
+          "Please enter the performance venue capacity: "
+      );
+
+      if (venueCapacityString.isEmpty()) {
+        textUserInterface.displayError("Input is empty");
+        continue;
+      }
+
+      try {
+        int venueCapacity = Integer.parseInt(venueCapacityString);
+
+        if (venueCapacity <= 0) {
+          textUserInterface.displayError("Venue capacity must be larger than 0");
+          continue;
+        }
+        else{
+          validCapacityString = true;
+        }
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("Invalid capacity entered");
+        continue;
+      }
+    }
+
+    return venueCapacityString;
+
+  }
 
   // -------------- Input validation functionality below here --------------
 
