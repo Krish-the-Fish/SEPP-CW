@@ -1,12 +1,24 @@
 package com.fortytwogroup;
 
 
+import com.fortytwogroup.controller.BookingController;
+import com.fortytwogroup.controller.EventPerformanceController;
+import com.fortytwogroup.controller.MenuController;
+import com.fortytwogroup.controller.UserController;
 import com.fortytwogroup.view.TextUserInterface;
-import java.util.ArrayList;
 
-public class Main {
+
+
+public class Main { // Program starts here.
   public static void main(String[] args) {
 
+    TextUserInterface UI = new TextUserInterface();
+    UserController userController = new UserController(UI, null);
+    EventPerformanceController eventPerformanceController = new EventPerformanceController(UI);
+    BookingController bookingController = new BookingController(null, null, null);
+    MenuController menuController = new MenuController(userController, eventPerformanceController, bookingController, UI);
+
+    menuController.mainMenu();
 
   }
 }
