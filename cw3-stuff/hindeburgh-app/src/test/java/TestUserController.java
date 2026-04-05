@@ -1,20 +1,21 @@
-
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
-
-// 2. JUnit 5 Annotations
-import com.fortytwogroup.model.AdminStaff;
 import com.fortytwogroup.model.Student;
 import com.fortytwogroup.model.StudentPreferences;
-import com.fortytwogroup.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import com.fortytwogroup.controller.UserController;
 import com.fortytwogroup.external.MockVerificationService;
 import com.fortytwogroup.view.TextUserInterface;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.never;
+import static org.mockito.ArgumentMatchers.anyString;
 
 public class TestUserController {
 
