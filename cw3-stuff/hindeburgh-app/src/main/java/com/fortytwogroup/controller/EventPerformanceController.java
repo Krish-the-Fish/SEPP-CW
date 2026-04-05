@@ -16,6 +16,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+
 public class EventPerformanceController extends Controller {
   private long nextEventID;
   private long nextPerformanceID;
@@ -25,15 +26,16 @@ public class EventPerformanceController extends Controller {
   // dependency injection
   private TextUserInterface textUserInterface;
 
+
   public EventPerformanceController(
       TextUserInterface textUserInterface,
       Collection<Performance> performances,
       MockPaymentSystem mockPaymentSystem) {
-    this.textUserInterface = textUserInterface;
-    this.nextEventID = 1;
-    this.nextPerformanceID = 1;
-    this.performances = performances;   // ref to collection shared with booking controller
-    this.mockPaymentSystem = mockPaymentSystem;
+      this.textUserInterface = textUserInterface;
+      this.nextEventID = 1;
+      this.nextPerformanceID = 1;
+      this.performances = performances;   // ref to collection shared with booking controller
+      this.mockPaymentSystem = mockPaymentSystem;
 
   }
 
@@ -249,6 +251,7 @@ public class EventPerformanceController extends Controller {
             + "\n9 - Ticket price"
             + "\n10 - If event is finished"
             + "\n11 - If event is cancelled\n?\n");
+
     switch (searchParameter) {
       case "1": // Search by start date. Definitely room to upgrade it for before and after and it's probably a good idea
         String startDateString = textUserInterface.getInput("Enter start date to search for as YYYY-MM-DD: ");
@@ -259,6 +262,7 @@ public class EventPerformanceController extends Controller {
         }
 
         LocalDate startDate = LocalDate.parse(startDateString);
+
         for (Performance p : this.performances) {
           String pString = p.toString();
 
@@ -296,6 +300,7 @@ public class EventPerformanceController extends Controller {
 
         LocalDate endDate = LocalDate.parse(endDateRawString);
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("End: ") + "End: ".length();
           int end = pString.indexOf("\nPerformers: ");
@@ -307,7 +312,9 @@ public class EventPerformanceController extends Controller {
         break;
       case "3": // Search by performer name
         String performerName = textUserInterface.getInput("Enter performer name to search for: ");
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("Performers: ") + "Performers: ".length();
           int end = pString.indexOf("\nVenue Address: ");
@@ -319,7 +326,9 @@ public class EventPerformanceController extends Controller {
         break;
       case "4": // Search by venue address
         String venueAddress = textUserInterface.getInput("Enter venue address to search for: ");
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("Venue Address: ") + "Venue Address: ".length();
           int end = pString.indexOf("\nVenue Capacity: ");
@@ -334,7 +343,9 @@ public class EventPerformanceController extends Controller {
 
         try{
           int venueCapacity = Integer.parseInt(venueCapacityString);
+
           for (Performance p : this.performances) {
+
             String pString = p.toString();
             int start = pString.indexOf("Venue Capacity: ") + "Venue Capacity: ".length();
             int end = pString.indexOf("\nVenue is Outdoors: ");
@@ -363,7 +374,9 @@ public class EventPerformanceController extends Controller {
             textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
             break;
         }
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("Outdoors: ") + "Outdoors: ".length();
           int end = pString.indexOf("\nSmoking Allowed: ");
@@ -387,7 +400,9 @@ public class EventPerformanceController extends Controller {
             textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
             break;
         }
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("Smoking Allowed: ") + "Smoking Allowed: ".length();
           int end = pString.indexOf("\nTickets Total: ");
@@ -401,7 +416,9 @@ public class EventPerformanceController extends Controller {
         String numTicketsAvailableString = textUserInterface.getInput("Enter number of tickets you are looking for: ");
         try{
           int numTicketsAvailable = Integer.parseInt(numTicketsAvailableString);
+
           for (Performance p : this.performances) {
+
             String pString = p.toString();
             int start = pString.indexOf("Tickets Total: ") + "Tickets Total: ".length();
             int end = pString.indexOf("\nTickets Sold: ");
@@ -420,7 +437,9 @@ public class EventPerformanceController extends Controller {
         String ticketPriceString = textUserInterface.getInput("Enter desired ticket price: ");
         try{
           double ticketPrice = Double.parseDouble(ticketPriceString);
+
           for (Performance p : this.performances) {
+
             String pString = p.toString();
             int start = pString.indexOf("Ticket Price: ") + "Ticket Price: ".length();
             int end = pString.indexOf("\nStatus: ");
@@ -449,7 +468,9 @@ public class EventPerformanceController extends Controller {
             textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
             break;
         }
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("End: ") + "End: ".length();
           int finished = pString.indexOf("\nPerformers: ");
@@ -474,7 +495,9 @@ public class EventPerformanceController extends Controller {
             textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
             break;
         }
+
         for (Performance p : this.performances) {
+
           String pString = p.toString();
           int start = pString.indexOf("Status: ") + "Status: ".length();
           int end = pString.indexOf("\n");
@@ -485,13 +508,16 @@ public class EventPerformanceController extends Controller {
           }
         }
         break;
+
     }
+
 
   }
 
   public void viewPerformance() {
     long performanceId = Long.parseLong(textUserInterface.getInput("Enter performance ID: "));
     Performance p = getPerformanceByID(performanceId);
+
 
     if (p == null) {
       textUserInterface.displayError("No performance found with that ID");
@@ -581,20 +607,21 @@ public class EventPerformanceController extends Controller {
       textUserInterface.displayError("The requested performance's event is non ticketed. It cannot be sponsored.");
     }
 
+    
   }
 
   private void addEvent(Event e) {
-
   }
 
   private void addPerformance(Performance p) {
-
   }
 
   private Event getEventByID(long eventID) {
+
     for (Performance p : this.performances) {
       if (p.getEvent().getEventId() == eventID) {
         return p.getEvent();
+
       }
     }
     return null;
@@ -604,12 +631,18 @@ public class EventPerformanceController extends Controller {
     for (Performance p : this.performances) {
       if (p.getEvent().getEventTitle().equalsIgnoreCase(title)) {
         return p.getEvent();
+
       }
     }
     return null;
   }
 
   private Performance getPerformanceByID(long performanceID) {
+    for (Performance p : this.performances) {
+      if (p.getPerformanceId() == performanceID) {
+        return p;
+      }
+    }
     return null;
   }
 
@@ -630,6 +663,7 @@ public class EventPerformanceController extends Controller {
       numTicketsForPerformance = getNumTicketsAvailableFromEP();
       ticketPrice = getTicketPriceFromEP();
     }
+
 
     // get the names of the performers from the EP
     Collection<String> performers = getPerformerNamesFromEP();
@@ -786,6 +820,8 @@ public class EventPerformanceController extends Controller {
     return numTicketsAvailable;
 
   }
+
+
 
   private double getTicketPriceFromEP() {
 
@@ -984,6 +1020,8 @@ public class EventPerformanceController extends Controller {
     return venueCapacityString;
 
   }
+
+
 
   // -------------- Input validation functionality below here --------------
 

@@ -124,17 +124,19 @@ public class Performance {
 
   public String getBookingDetailsForRefund() {
 
+    String bookingDetailsForRefund = "";
+
     for (Booking b : allBookings) {
       if (b.getStatus() == BookingStatus.ACTIVE) {
         
-        return (
+        bookingDetailsForRefund += (
           "Student details: " + b.getStudentDetails() + "\n" +
           "Amount paid: " + b.getAmountPaid() + "\n" +
-          "Number of tickets purchased: " + b.getNumTickets() + "\n"         
+          "Number of tickets purchased: " + b.getNumTickets() + "\n---\n"         
         );
       }
     }
-    return null;
+    return bookingDetailsForRefund;
   }
 
   public void sponsor(double amount) {
@@ -145,7 +147,7 @@ public class Performance {
   }
 
   public void review(int rating, String comment) {
-    if (checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
+    if (!checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
       reviewRatings.add(rating);
 
       if (comment != null && !comment.isEmpty()) {

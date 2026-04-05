@@ -44,7 +44,11 @@ public class Booking {
   }
 
   public void cancelByStudent() {
+    if (!(this.status == BookingStatus.ACTIVE)) {
+      return;
+    }
 
+    this.status = BookingStatus.CANCELLED_BY_STUDENT;
   }
 
   public BookingStatus getStatus() {
@@ -60,7 +64,11 @@ public class Booking {
   }
 
   public void cancelByProvider() {
+    if (!(this.status == BookingStatus.ACTIVE)) {
+      return;
+    }
 
+    this.status = BookingStatus.CANCELLED_BY_PROVIDER;
   }
 
   public boolean checkBookedByStudent(String email) {
@@ -68,7 +76,10 @@ public class Booking {
   }
 
   public String getStudentDetails() {
-    return null;
+    return (
+      "Student email: " + student.getEmail() + "\n" +
+      "Student phone: " + student.getPhoneNumber()
+    );
   }
 
   public String generateBookingRecord() {
