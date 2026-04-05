@@ -29,6 +29,10 @@ public class Event {
     this.entertainmentProvider = entertainmentProvider;
   }
 
+  public long getId() {
+    return eventId;
+  }
+
 
 
   public Performance createPerformance(long performanceId, LocalDateTime startDateTime, LocalDateTime endDateTime,

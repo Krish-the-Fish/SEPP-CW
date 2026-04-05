@@ -31,5 +31,11 @@ public class EntertainmentProvider extends User {
     this.events.add(event);
   }
 
+  public String getBusinessNumber() {
+    return businessNumber;
+  }
 
+  public Collection<Event> getEvents() {
+    return events;
+  }
 }

@@ -1,10 +1,7 @@
 package com.fortytwogroup.controller;
 
 import com.fortytwogroup.external.MockVerificationService;
-import com.fortytwogroup.model.AdminStaff;
-import com.fortytwogroup.model.EntertainmentProvider;
-import com.fortytwogroup.model.Student;
-import com.fortytwogroup.model.User;
+import com.fortytwogroup.model.*;
 import com.fortytwogroup.model.enums.EventType;
 import com.fortytwogroup.view.TextUserInterface;
 
@@ -96,22 +93,29 @@ public class UserController extends Controller {
       name = textUserInterface.getInput("Name: ");
       description = textUserInterface.getInput("Description: ");
 
+      boolean emptyFields = false;
       for (String input : new String[] { orgName, businessNumber, email, password, name, description }) {
         if (input.isBlank()) {
-          textUserInterface.displayError("A field cannot be blank!");
-          validRegistration = false;
+          emptyFields = true;
           break;
         }
       }
 
-      if (EPAccountAlreadyExists(orgName, businessNumber, email)) {
+      if (emptyFields) {
+        textUserInterface.displayError("A field cannot be blank!");
+        validRegistration = false;
+        continue;
+      }
+
+      if (EPAccountAlreadyExists(email, orgName, businessNumber)) {
         textUserInterface.displayError("This EP is already registered!");
-        return;
+        validRegistration = false;
+        continue;
       }
 
       if (!verificationService.verifyEntertainmentProvider(businessNumber)) {
         textUserInterface.displayError("Verification failed!");
-        return;
+        validRegistration = false;
       }
     }
 
@@ -133,8 +137,19 @@ public class UserController extends Controller {
     String orgName,
     String businessNumber) {
 
-    // UNUSED PARAMETERS, COULD BE ISSUE OR SOMETHING TO TALK ABOUT IN REVIEW
-    return users.containsKey(email) && users.get(email) instanceof EntertainmentProvider;
+    // Businesses cannot have the same orgname as a preregistered business or the same business number
+    boolean inHashMap = users.containsKey(email) && users.get(email) instanceof EntertainmentProvider;
+
+    boolean found = false;
+    for (User user : users.values()) {
+      if (user instanceof EntertainmentProvider &&
+          (((EntertainmentProvider) user).getBusinessNumber().equals(businessNumber) ||
+            ((EntertainmentProvider) user).getOrgName().equals(orgName))) {
+          found = true;
+      }
+    }
+
+    return found || inHashMap;
   }
 
   public void editPreferences() {
@@ -148,6 +163,7 @@ public class UserController extends Controller {
       System.out.println("Write your choices in the same line with one comma in between");
       preferences = textUserInterface.getInput("Preferences: ");
       String[] preferencesArray = preferences.split("\\s*,\\s*");
+
       int counter = 0;
       for (String preference : preferencesArray) {
         counter++;
@@ -159,6 +175,7 @@ public class UserController extends Controller {
 
       if (counter > 3) {
         textUserInterface.displayError("Too many preferences!");
+        validInput = false;
       }
     }
 
@@ -222,9 +239,16 @@ public class UserController extends Controller {
   }
 
   private EntertainmentProvider getEntertainmentProviderOwningEvent(long eventNumber) {
+    for (User user : users.values()) {
+      if (user instanceof EntertainmentProvider) {
+        Collection<Event> events = ((EntertainmentProvider) user).getEvents();
+        for (Event event : events) {
+          if (event.getId() == eventNumber) {
+            return (EntertainmentProvider) user;
+          }
+        }
+      }
+    }
     return null;
   }
-
-
-
 }
