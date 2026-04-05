@@ -47,8 +47,8 @@ public class BookingController extends Controller {
 
     boolean possible = false;
     Performance chosenPerformance = null;
-    long chosenPerformanceID = -1;
-    int chosenNumTickets = -1;
+    long chosenPerformanceID = -1;  // make negative so if issue, can be spotted
+    int chosenNumTickets = -1;  // make negative so if issue, can be spotted
 
     //loop: while performance == null or (possible == false and isTicketed == true)
     // chosenPerformance.checkIfEventIsTicketed condition on while should be redundant now
@@ -306,5 +306,7 @@ public class BookingController extends Controller {
     }
     return null;
   }
+
+
 }
 

@@ -15,16 +15,25 @@ public class Event {
   private Collection<Performance> performances;
 
 
-  public Event(long eventId, String title, EventType type, boolean isTicketed) {
+  public Event(
+      long eventId,
+      String title,
+      EventType type,
+      boolean isTicketed,
+      EntertainmentProvider entertainmentProvider) {
     this.eventId = eventId;
     this.title = title;
     this.type = type;
     this.isTicketed = isTicketed;
+    this.performances = new ArrayList<>();  // will add performances as they come in
+    this.entertainmentProvider = entertainmentProvider;
   }
 
-  public long getEventId() {
+  public long getId() {
     return eventId;
   }
+
+
 
   public Performance createPerformance(long performanceId, LocalDateTime startDateTime, LocalDateTime endDateTime,
       Collection<String> performerNames, String venueAddress, int venueCapacity, boolean venueIsOutdoors,
@@ -90,6 +99,10 @@ public class Event {
     performances.add(p);
   }
 
+  public void setEventTitle(String newEventTitle) {
+    this.title = newEventTitle;
+  }
+
   /**
    * Method deliberately omits the reference to the entertainment provider object
    * @return String containing key fields within an Event instance
@@ -110,5 +123,13 @@ public class Event {
   // public getter for event title
   public String getEventTitle() {
     return title;
+  }
+
+  public Collection<Performance> getPerformancesCollection() {
+    return performances;
+  }
+
+  public long getEventId() {
+    return eventId;
   }
 }

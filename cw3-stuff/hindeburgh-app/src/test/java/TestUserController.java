@@ -3,6 +3,10 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 // 2. JUnit 5 Annotations
+import com.fortytwogroup.model.AdminStaff;
+import com.fortytwogroup.model.Student;
+import com.fortytwogroup.model.StudentPreferences;
+import com.fortytwogroup.model.User;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -27,7 +31,6 @@ public class TestUserController {
 
   @Test
   void login_successful() {
-    //kevinking@school.com, 12345, Kevin King
     when(textUserInterface.getInput("Email: ")).thenReturn("kevinking@school.com");
     when(textUserInterface.getInput("Password: ")).thenReturn("12345");
 
@@ -44,42 +47,74 @@ public class TestUserController {
 
   @Test
   void login_empty_email() {
-    when(textUserInterface.getInput("Email: ")).thenReturn("");
-    when(textUserInterface.getInput("Password: ")).thenReturn("12345");
+    when(textUserInterface.getInput("Email: ")).thenReturn("", "kevinking@school.com");
+    when(textUserInterface.getInput("Password: ")).thenReturn("12345", "12345");
 
     userController.login();
 
     verify(textUserInterface).displayError("Email cannot be blank!");
+
+    verify(textUserInterface).displaySuccess("Successfully logged in!");
+
+    assertEquals(
+            userController.getUsers().get("kevinking@school.com"),
+            userController.getCurrentUser(),
+            "After failing login due to empty email, a successful login should be allowed"
+    );
   }
 
   @Test
   void login_empty_password() {
-    when(textUserInterface.getInput("Email: ")).thenReturn("kevinking@school.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("");
+    when(textUserInterface.getInput("Email: ")).thenReturn("kevinking@school.com", "kevinking@school.com");
+    when(textUserInterface.getInput("Password: ")).thenReturn("", "12345");
 
     userController.login();
 
     verify(textUserInterface).displayError("Password cannot be blank!");
+
+    verify(textUserInterface).displaySuccess("Successfully logged in!");
+
+    assertEquals(
+            userController.getUsers().get("kevinking@school.com"),
+            userController.getCurrentUser(),
+            "After failing login due to empty password, a successful login should be allowed"
+    );
   }
 
   @Test
   void login_non_existing_email() {
-    when(textUserInterface.getInput("Email: ")).thenReturn("nonexisting@school.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("");
+    when(textUserInterface.getInput("Email: ")).thenReturn("nonexisting@school.com", "kevinking@school.com");
+    when(textUserInterface.getInput("Password: ")).thenReturn("", "12345");
 
     userController.login();
 
     verify(textUserInterface).displayError("User not found!");
+
+    verify(textUserInterface).displaySuccess("Successfully logged in!");
+
+    assertEquals(
+            userController.getUsers().get("kevinking@school.com"),
+            userController.getCurrentUser(),
+            "After failing login due to empty password, a successful login should be allowed"
+    );
   }
 
   @Test
   void login_incorrect_password() {
-    when(textUserInterface.getInput("Email: ")).thenReturn("kevinking@school.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("incorrectpassword");
+    when(textUserInterface.getInput("Email: ")).thenReturn("kevinking@school.com", "kevinking@school.com");
+    when(textUserInterface.getInput("Password: ")).thenReturn("incorrectpassword", "12345");
 
     userController.login();
 
     verify(textUserInterface).displayError("Incorrect password!");
+
+    verify(textUserInterface).displaySuccess("Successfully logged in!");
+
+    assertEquals(
+            userController.getUsers().get("kevinking@school.com"),
+            userController.getCurrentUser(),
+            "After failing login due to empty password, a successful login should be allowed"
+    );
   }
 
   @Test
@@ -121,61 +156,179 @@ public class TestUserController {
 
   @Test
   void registerEntertainmentProvider_empty_field() {
-    when(textUserInterface.getInput("Organisation Name: ")).thenReturn("Eventful Events");
-    when(textUserInterface.getInput("Business Number: ")).thenReturn("");
-    when(textUserInterface.getInput("Email: ")).thenReturn("eventfulEvents@business.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("Events123");
-    when(textUserInterface.getInput("Name: ")).thenReturn("Evan Evans");
+    //Staggering the blank values to check error is thrown for all empty fields
+    when(textUserInterface.getInput("Organisation Name: ")).thenReturn(
+            "", "Eventful Events"
+    );
+    when(textUserInterface.getInput("Business Number: ")).thenReturn(
+            "6372646378", "", "6372646378"
+    );
+    when(textUserInterface.getInput("Email: ")).thenReturn(
+            "eevents@business.com", "eevents@business.com", "", "eevents@business.com"
+    );
+    when(textUserInterface.getInput("Password: ")).thenReturn(
+            "Events123", "Events123", "Events123", "", "Events123"
+    );
+    when(textUserInterface.getInput("Name: ")).thenReturn(
+            "Evan Evans", "Evan Evans", "Evan Evans", "Evan Evans", "", "Evan Evans"
+    );
     when(textUserInterface.getInput("Description: ")).thenReturn(
-            "A large scale event company dedicated to making fun events for students"
+            "disc", "disc", "disc", "disc", "disc", "", "disc"
     );
 
     userController.registerEntertainmentProvider();
 
-    verify(textUserInterface).displayError("A field cannot be blank!");
+    verify(textUserInterface, times(6)).displayError("A field cannot be blank!");
 
-    assertNull(
-            userController.getUsers().get("eventfulEvents@business.com"),
-            "Failing to register an EP, it should not be stored in the map of users"
+    verify(textUserInterface).displaySuccess("Successfully registered new EP!");
+
+    assertNotNull(
+            userController.getUsers().get("eevents@business.com"),
+            "After successfully registering an EP, it should be stored in the map of users"
     );
   }
 
   @Test
   void registerEntertainmentProvider_invalid_businessNumber() {
-    when(textUserInterface.getInput("Organisation Name: ")).thenReturn("Eventful Events");
-    when(textUserInterface.getInput("Business Number: ")).thenReturn("1");
-    when(textUserInterface.getInput("Email: ")).thenReturn("eventfulEvents@business.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("Events123");
-    when(textUserInterface.getInput("Name: ")).thenReturn("Evan Evans");
+    when(textUserInterface.getInput("Organisation Name: ")).thenReturn("Eventful Events", "Eventful Events");
+    when(textUserInterface.getInput("Business Number: ")).thenReturn("1", "6372646378");
+    when(textUserInterface.getInput("Email: ")).thenReturn("eventfulEvents@business.com", "eventfulEvents@business.com");
+    when(textUserInterface.getInput("Password: ")).thenReturn("Events123", "Events123");
+    when(textUserInterface.getInput("Name: ")).thenReturn("Evan Evans", "Evan Evans");
     when(textUserInterface.getInput("Description: ")).thenReturn(
-            "A large scale event company dedicated to making fun events for students"
+            "Disc", "Disc"
     );
 
     userController.registerEntertainmentProvider();
 
-    verify(textUserInterface).displayError("Verification Failed!");
+    verify(textUserInterface).displayError("Verification failed!");
 
-    assertNull(
+    verify(textUserInterface).displaySuccess("Successfully registered new EP!");
+
+    assertNotNull(
             userController.getUsers().get("eventfulEvents@business.com"),
-            "Failing to register an EP, it should not be stored in the map of users"
+            "After successfully registering an EP, it should be stored in the map of users"
     );
   }
 
   @Test
   void registerEntertainmentProvider_ep_already_registered() {
-    when(textUserInterface.getInput("Organisation Name: ")).thenReturn("Eventful Events");
-    when(textUserInterface.getInput("Business Number: ")).thenReturn("6372646378");
-    when(textUserInterface.getInput("Email: ")).thenReturn("eventfulEvents@business.com");
-    when(textUserInterface.getInput("Password: ")).thenReturn("Events123");
-    when(textUserInterface.getInput("Name: ")).thenReturn("Evan Evans");
+    when(textUserInterface.getInput("Organisation Name: ")).thenReturn(
+            "Eventful Events", "Eventful Events", "Popping Parties"
+    );
+    when(textUserInterface.getInput("Business Number: ")).thenReturn(
+            "6372646378", "6372646378", "7483948914"
+    );
+    when(textUserInterface.getInput("Email: ")).thenReturn(
+            "eventfulEvents@business.com", "eventfulEvents@business.com", "pparties@business.com"
+    );
+    when(textUserInterface.getInput("Password: ")).thenReturn(
+            "Events123", "Events123", "parties"
+    );
+    when(textUserInterface.getInput("Name: ")).thenReturn(
+            "Evan Evans", "Evan Evans", "Paul Porter"
+    );
     when(textUserInterface.getInput("Description: ")).thenReturn(
-            "A large scale event company dedicated to making fun events for students"
+            "Desc"
     );
 
     userController.registerEntertainmentProvider();
+    userController.registerEntertainmentProvider();
 
-    verify(textUserInterface).displayError("Verification Failed!");
+    verify(textUserInterface).displayError("This EP is already registered!");
   }
 
+  @Test
+  void editPreferences_successful() {
+    Student mockStudent = mock(Student.class);
+    StudentPreferences mockStudentPreferences = mock(StudentPreferences.class);
 
+    when(textUserInterface.getInput("Preferences: ")).thenReturn("music, dance, theatre");
+
+    when(mockStudent.getPreferenceClass()).thenReturn(mockStudentPreferences);
+
+    when(mockStudentPreferences.updatePreferences("music, dance, theatre")).thenReturn(true);
+
+    userController.setCurrentUser(mockStudent);
+
+    userController.editPreferences();
+
+    verify(mockStudentPreferences).updatePreferences("music, dance, theatre");
+
+    verify(textUserInterface).displaySuccess("Preferences updated!");
+
+    verify(textUserInterface, never()).displayError(anyString());
+  }
+
+  @Test
+  void editPreferences_invalid_preferences() {
+    Student mockStudent = mock(Student.class);
+    StudentPreferences mockStudentPreferences = mock(StudentPreferences.class);
+
+    when(textUserInterface.getInput("Preferences: ")).thenReturn(
+            "music, dance, INVALID", "music, dance, theatre"
+    );
+
+    when(mockStudent.getPreferenceClass()).thenReturn(mockStudentPreferences);
+
+    when(mockStudentPreferences.updatePreferences("music, dance, theatre")).thenReturn(true);
+
+    userController.setCurrentUser(mockStudent);
+
+    userController.editPreferences();
+
+    verify(textUserInterface).displayError("INVALID is not a valid preference!");
+
+    verify(mockStudentPreferences).updatePreferences("music, dance, theatre");
+
+    verify(textUserInterface).displaySuccess("Preferences updated!");
+  }
+
+  @Test
+  void editPreferences_multiple_invalids() {
+    Student mockStudent = mock(Student.class);
+    StudentPreferences mockStudentPreferences = mock(StudentPreferences.class);
+
+    when(textUserInterface.getInput("Preferences: ")).thenReturn(
+            "INVALID, INVALID, INVALID", "music, dance, theatre"
+    );
+
+    when(mockStudent.getPreferenceClass()).thenReturn(mockStudentPreferences);
+
+    when(mockStudentPreferences.updatePreferences("music, dance, theatre")).thenReturn(true);
+
+    userController.setCurrentUser(mockStudent);
+
+    userController.editPreferences();
+
+    verify(textUserInterface, times(3)).displayError("INVALID is not a valid preference!");
+
+    verify(mockStudentPreferences).updatePreferences("music, dance, theatre");
+
+    verify(textUserInterface).displaySuccess("Preferences updated!");
+  }
+
+  @Test
+  void editPreferences_too_many_selections() {
+    Student mockStudent = mock(Student.class);
+    StudentPreferences mockStudentPreferences = mock(StudentPreferences.class);
+
+    when(textUserInterface.getInput("Preferences: ")).thenReturn(
+            "music, dance, theatre, sports", "music, dance, theatre"
+    );
+
+    when(mockStudent.getPreferenceClass()).thenReturn(mockStudentPreferences);
+
+    when(mockStudentPreferences.updatePreferences("music, dance, theatre")).thenReturn(true);
+
+    userController.setCurrentUser(mockStudent);
+
+    userController.editPreferences();
+
+    verify(textUserInterface).displayError("Too many preferences!");
+
+    verify(mockStudentPreferences).updatePreferences("music, dance, theatre");
+
+    verify(textUserInterface).displaySuccess("Preferences updated!");
+  }
 }

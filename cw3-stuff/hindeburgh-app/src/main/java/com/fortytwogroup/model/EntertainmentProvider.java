@@ -28,8 +28,14 @@ public class EntertainmentProvider extends User {
   }
 
   public void addEvent(Event event) {
-
+    this.events.add(event);
   }
 
+  public String getBusinessNumber() {
+    return businessNumber;
+  }
 
+  public Collection<Event> getEvents() {
+    return events;
+  }
 }
