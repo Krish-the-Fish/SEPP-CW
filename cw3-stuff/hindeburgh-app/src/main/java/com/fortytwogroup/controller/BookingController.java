@@ -1,17 +1,15 @@
 package com.fortytwogroup.controller;
 
-import com.fortytwogroup.model.Booking;
-import com.fortytwogroup.model.Performance;
-import com.fortytwogroup.model.Student;
-import com.fortytwogroup.view.View;
-import com.fortytwogroup.external.PaymentSystem;
-
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.fortytwogroup.external.PaymentSystem;
+import com.fortytwogroup.model.Booking;
+import com.fortytwogroup.model.Performance;
+import com.fortytwogroup.model.Student;
+import com.fortytwogroup.view.TextUserInterface;
 
 public class BookingController extends Controller {
-
   private long nextBookingNumber;
 
   // shared with EventPerformanceController
@@ -20,17 +18,17 @@ public class BookingController extends Controller {
   // collection of all bookings in the system
   private Collection<Booking> allBookingsInSystem;
 
-  private final View view;
+  private final TextUserInterface textUserInterface;
   private final PaymentSystem paymentSystem;
 
   // performances collection should come from MenuController
   public BookingController(
       Collection<Performance> performances,
-      View view,
+      TextUserInterface textUI,
       PaymentSystem paymentSystem) {
     this.nextBookingNumber = 1;  // first booking number should be 1
     this.performances = performances;  //
-    this.view = view;
+    this.textUserInterface = textUI;
     this.paymentSystem = paymentSystem;
     this.allBookingsInSystem = new ArrayList<>();
 
@@ -40,7 +38,7 @@ public class BookingController extends Controller {
 
     //checks if user is a student
     if (!checkCurrentUserIsStudent()) {
-      view.displayError("Only students can book performances");
+      textUserInterface.displayError("Only students can book performances");
       return;
     }
 
@@ -56,16 +54,16 @@ public class BookingController extends Controller {
     // chosenPerformance.checkIfEventIsTicketed condition on while should be redundant now
     while(chosenPerformance == null || (!possible && chosenPerformance.checkIfEventIsTicketed())) {
 
-      String chosenPerformanceIDRawString = view.getInput(enterPerformanceIDPrompt);
-      String chosenNumTicketsRawString = view.getInput(enterNumTicketsRequestedPrompt);
+      String chosenPerformanceIDRawString = textUserInterface.getInput(enterPerformanceIDPrompt);
+      String chosenNumTicketsRawString = textUserInterface.getInput(enterNumTicketsRequestedPrompt);
 
       if (chosenPerformanceIDRawString == null) {
-        view.displayError("Invalid Performance ID");
+        textUserInterface.displayError("Invalid Performance ID");
         continue;
       }
 
       if (chosenNumTicketsRawString == null) {
-        view.displayError("Invalid ticket number entered");
+        textUserInterface.displayError("Invalid ticket number entered");
         continue;
       }
 
@@ -73,7 +71,7 @@ public class BookingController extends Controller {
       try {
         chosenPerformanceID = Long.parseLong(chosenPerformanceIDRawString);
       } catch (NumberFormatException e) {
-        view.displayError("Performance ID entered in invalid format."
+        textUserInterface.displayError("Performance ID entered in invalid format."
             + "Please enter the performance ID exactly with no other characters.");
         continue;
       }
@@ -81,20 +79,20 @@ public class BookingController extends Controller {
       try {
         chosenNumTickets = Integer.parseInt(chosenNumTicketsRawString);
       } catch (NumberFormatException e) {
-        view.displayError("Invalid ticket number entered.");
+        textUserInterface.displayError("Invalid ticket number entered.");
         continue;
       }
 
       // check if number of tickets asked for is a positive integer
       if (chosenNumTickets <= 0) {
-        view.displayError("Invalid number of tickets requested");
+        textUserInterface.displayError("Invalid number of tickets requested");
         continue;
       }
 
       chosenPerformance = getPerformanceByID(chosenPerformanceID);
 
       if (chosenPerformance == null) {
-        view.displayError("Performance with given number does not exist.");
+        textUserInterface.displayError("Performance with given number does not exist.");
       }
 
       else {
@@ -164,7 +162,7 @@ public class BookingController extends Controller {
     if (!paymentSuccessful) {
 
       //payment failed
-      view.displayError("There was an issue with payment");
+      textUserInterface.displayError("There was an issue with payment");
       booking.cancelPaymentFailed();  // update status field of Booking object
       return;  // end bookPerformance process in failure
 
@@ -174,11 +172,11 @@ public class BookingController extends Controller {
     int numTicketsSold = chosenPerformance.getNumTicketsSold();
     chosenPerformance.setNumTicketsSold(numTicketsSold + chosenNumTickets);
 
-    view.displaySuccess("Booking Successful");
+    textUserInterface.displaySuccess("Booking Successful");
 
     //generate and display booking record
     String bookingRecord = booking.generateBookingRecord();
-    view.displayBookingRecord(bookingRecord);
+    textUserInterface.displayBookingRecord(bookingRecord);
 
 
   }
@@ -187,10 +185,76 @@ public class BookingController extends Controller {
 
 
   public void reviewPerformance() {
+    if (!(checkCurrentUserIsStudent())){
+      textUserInterface.displayError("Students are the only permitted users to post reviews."); 
+      return;
+    }
+
+    Long performanceID;
+    try {
+        performanceID = Long.parseLong(textUserInterface.getInput("Enter the ID of the performance you wish to review: "));
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("This is not an valid performance number.");
+        return;
+      }
+    Performance performanceForReview = getPerformanceByID(performanceID);
+    if (performanceForReview == null) {
+      textUserInterface.displayError("Performance with that ID does not exist.");
+      return;
+    }
+    
+    if (!(performanceForReview.checkHasNotHappenedYet())){
+      int rating;
+      try {
+          rating = Integer.parseInt(textUserInterface.getInput("Please rate the performance on a scale of 1-5\n1 - You strongly dislike it\n5 - You strongly like it\n \n Rating: "));
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("This is not an valid rating.");
+        return;
+      }
+
+      String comment = textUserInterface.getInput("Please provide a respectful but informative review on your experience: ");
+
+      performanceForReview.review(rating, comment);
+      textUserInterface.displaySuccess("Review submitted!");
+    }
+    
 
   }
 
   public void cancelBooking() {
+    if (!(checkCurrentUserIsStudent() || checkCurrentUserIsEntertainmentProvider())){
+      textUserInterface.displayError("Only students and entertainment providers can cancel bookings");
+    }
+
+    Long bookingNumber;
+    try {
+          bookingNumber = Long.parseLong(textUserInterface.getInput("Enter the booking number of the event you wish to cancel: "));
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("This is not an valid booking number.");
+        return;
+      }
+    Booking cancelledBooking = getBookingByNumber(bookingNumber);
+
+    if (cancelledBooking == null) {
+      textUserInterface.displayError("The booking with this booking number does not exist.");
+      return;
+    }
+
+    String email = getCurrentUser().getEmail();
+    Boolean sameUser = cancelledBooking.checkBookedByStudent(email);
+    if (!sameUser) {
+      textUserInterface.displayError("The booking with given number does not belong to you.");
+      return;
+    }
+
+    Boolean refundSuccessful = false;
+
+    //Refund logic here. MISSING -------------------------------- MISSING -----------------------------------
+
+    if (refundSuccessful) {
+      if (checkCurrentUserIsStudent()){cancelledBooking.cancelByStudent();}
+      else if (checkCurrentUserIsEntertainmentProvider()) {cancelledBooking.cancelByProvider();}
+    }
 
   }
 
@@ -214,7 +278,7 @@ public class BookingController extends Controller {
     boolean isTicketed = performance.checkIfEventIsTicketed();
 
     if (!isTicketed) {
-      view.displayError("The requested performance is not ticketed."
+      textUserInterface.displayError("The requested performance is not ticketed."
           + "There is no need to book it");
       return false;
     }
@@ -222,7 +286,7 @@ public class BookingController extends Controller {
     boolean enoughTicketsLeft = performance.checkIfTicketsLeft(numTickets);
 
     if (!enoughTicketsLeft) {
-      view.displayError("Requested performance has not enough tickets left.");
+      textUserInterface.displayError("Requested performance has not enough tickets left.");
       return false;
     }
 
@@ -235,6 +299,11 @@ public class BookingController extends Controller {
   }
 
   private Booking getBookingByNumber(long bookingNumber) {
+    for (Booking b : allBookingsInSystem) {
+      if (b.getBookingNumber() == bookingNumber) {
+        return b;
+      }
+    }
     return null;
   }
 }

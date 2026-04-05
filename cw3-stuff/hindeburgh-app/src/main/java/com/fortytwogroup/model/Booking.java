@@ -35,6 +35,10 @@ public class Booking {
 
   }
 
+  public long getBookingNumber() {
+    return bookingNumber;
+  }
+
   public double getAmountPaid() {
     return amountPaid;
   }
@@ -72,7 +76,12 @@ public class Booking {
   }
 
   public boolean checkBookedByStudent(String email) {
-    return false;
+    String studentDetails = getStudentDetails();
+    int startIndex = studentDetails.indexOf("Student email: ");
+    int endIndex = studentDetails.indexOf("\nStudent phone: ");
+    String studentEmail = getStudentDetails().substring(startIndex, endIndex);
+    
+    return (studentEmail.equals(email));
   }
 
   public String getStudentDetails() {

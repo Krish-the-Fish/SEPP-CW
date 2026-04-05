@@ -147,7 +147,7 @@ public class Performance {
   }
 
   public void review(int rating, String comment) {
-    if (!checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
+    if (checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
       reviewRatings.add(rating);
 
       if (comment != null && !comment.isEmpty()) {
