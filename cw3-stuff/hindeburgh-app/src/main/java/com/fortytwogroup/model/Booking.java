@@ -35,6 +35,10 @@ public class Booking {
 
   }
 
+  public Performance getPerformance() {
+    return performance;
+  }
+
   public long getBookingNumber() {
     return bookingNumber;
   }

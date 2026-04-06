@@ -1,5 +1,6 @@
 package com.fortytwogroup.controller;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -240,17 +241,28 @@ public class BookingController extends Controller {
       return;
     }
 
+    LocalDateTime startDate = cancelledBooking.getPerformance().getStartDateTime(); // Checking 24 hours
+    if (!((LocalDateTime.now()).isAfter(startDate.minusHours(24)))){
+      textUserInterface.displayError("You cannot cancel a booking that's less than 24 hours away.");
+      return;
+    }
+    
+
     String email = getCurrentUser().getEmail();
     Boolean sameUser = cancelledBooking.checkBookedByStudent(email);
+    
     if (!sameUser) {
       textUserInterface.displayError("The booking with given number does not belong to you.");
       return;
     }
 
-    Boolean refundSuccessful = false;
+    int phoneNumber = ((Student) getCurrentUser()).getPhoneNumber();
+    int tickets = cancelledBooking.getNumTickets();
+    String eventTitle = cancelledBooking.getPerformance().getEventTitle();
+    String epEmail = cancelledBooking.getPerformance().getEvent().getOrganiserEmail();
+    double transactionAmount = cancelledBooking.getAmountPaid();
 
-    //Refund logic here. MISSING -------------------------------- MISSING -----------------------------------
-
+    Boolean refundSuccessful = paymentSystem.processRefund(tickets, eventTitle, email, phoneNumber, epEmail, transactionAmount, "Cancelled by student.");
     if (refundSuccessful) {
       if (checkCurrentUserIsStudent()){cancelledBooking.cancelByStudent();}
       else if (checkCurrentUserIsEntertainmentProvider()) {cancelledBooking.cancelByProvider();}
