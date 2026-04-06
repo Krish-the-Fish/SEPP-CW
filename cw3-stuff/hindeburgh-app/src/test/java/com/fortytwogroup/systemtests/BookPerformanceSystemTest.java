@@ -58,8 +58,15 @@ public class BookPerformanceSystemTest {
         performances = new ArrayList<>();
 
         userController = new UserController(mockUI, mockVerificationService);
-        eventPerformanceController = new EventPerformanceController(mockUI, performances, mockPaymentSystem);
-        bookingController = new BookingController(performances, mockUI, mockPaymentSystem);
+
+        // Create controllers with the correct 2 arguments
+        eventPerformanceController = new EventPerformanceController(mockUI, mockPaymentSystem);
+        bookingController = new BookingController(mockUI, mockPaymentSystem);
+
+        // Set the shared performances list using the setter methods
+        eventPerformanceController.setPerformances(performances);
+        bookingController.setPerformances(performances);
+
         menuController = new MenuController(
                 userController, eventPerformanceController, bookingController, mockUI);
 
@@ -266,8 +273,8 @@ public class BookPerformanceSystemTest {
                 .thenReturn(false);
 
         // rebuild booking controller with the failing payment system
-        BookingController failBookingController = new BookingController(
-                performances, mockUI, failingPayment);
+        BookingController failBookingController = new BookingController(mockUI, failingPayment);
+        failBookingController.setPerformances(performances);
 
         // still need the normal setup for EP + event
         registerEP();
