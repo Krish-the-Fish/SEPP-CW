@@ -1,8 +1,10 @@
 package com.fortytwogroup.controller;
 
+import com.fortytwogroup.model.Performance;
 import com.fortytwogroup.model.User;
 import com.fortytwogroup.view.TextUserInterface;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
@@ -42,6 +44,8 @@ public class MenuController extends Controller {
   private final EventPerformanceController eventPerformanceController;
   private final BookingController bookingController;
   private final TextUserInterface textUserInterface;
+  private Collection<Performance> performances;  // collection of all performances in the system
+  // performances collection contains both active and cancelled performances
 
   public MenuController(
         UserController userController,
@@ -52,6 +56,15 @@ public class MenuController extends Controller {
     this.eventPerformanceController = eventPerformanceController;
     this.bookingController = bookingController;
     this.textUserInterface = textUserInterface;
+
+    // instantiate list of all performances to be shared among the relevant controllers
+    this.performances = new ArrayList<>();
+    // store as array list so can add and potentially remove elements
+  }
+
+  // getter for performances reference sharing in main
+  public Collection<Performance> getPerformances() {
+    return performances;
   }
 
   public void mainMenu() {
