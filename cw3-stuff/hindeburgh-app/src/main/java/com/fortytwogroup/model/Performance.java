@@ -6,8 +6,6 @@ import java.util.Collection;
 import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
 
-import java.util.ArrayList;
-
 public class Performance {
   private long performanceId;
   private LocalDateTime startDateTime;
@@ -24,7 +22,6 @@ public class Performance {
   private double sponsoredAmount;
   private Collection<Integer> reviewRatings;
   private Collection<String> reviewComments;
-  private Collection<Booking> bookings;
   private PerformanceStatus status;
   private Event event;  // reference to the event that contains the performance
   // including inactive bookings in allBookings variable for possible auditing purposes
@@ -59,9 +56,20 @@ public class Performance {
     this.sponsoredAmount = 0;
     this.status = PerformanceStatus.ACTIVE;
     this.event = event;
-    this.allBookings = new ArrayList<>();
     
 
+  }
+
+  public Collection<Integer> getReviewRatings() {
+    return reviewRatings;
+  }
+
+  public Collection<String> getReviewComments() {
+    return reviewComments;
+  }
+
+  public String getVenueAddress() {
+    return venueAddress;
   }
 
   public LocalDateTime getStartDateTime() {
@@ -221,12 +229,6 @@ public class Performance {
   // public getter for numTicketsSold
   public int getNumTicketsSold() {
     return numTicketsSold;
-  }
-
-  public Collection<Booking> getBookings() {
-
-    return allBookings;
-
   }
 
   public void setNumTicketsSold(int newTicketsSoldValue) {

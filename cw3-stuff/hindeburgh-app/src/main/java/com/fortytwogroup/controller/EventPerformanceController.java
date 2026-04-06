@@ -243,8 +243,8 @@ public class EventPerformanceController extends Controller {
      * They type the day in the YYYY-MM-DD format.
      * The system knows the day a specific Performance object has by getting the 
      * substring of the toString()'ed performance object at the appropriate section.
-     *
-     * @param DateString        The date of the performances that the student wishes to search for.
+     * dateString is the date of the performances that the student wishes to search for.
+     * 
      * @return                  Group of performances, that have a performance on that date and fit the student preferences, are printed line by line.
      */
   public void searchForPerformances() {
@@ -256,6 +256,7 @@ public class EventPerformanceController extends Controller {
         }
 
         LocalDate date = LocalDate.parse(dateString);
+        String performances = "";
 
         for (Performance p : this.performances) {
           String pString = p.toString();
@@ -268,7 +269,8 @@ public class EventPerformanceController extends Controller {
           try {
               startDate = date.parse(pString.substring(startDateStartIndex, startDateEndIndex));
           } catch (Exception e) {
-            textUserInterface.displayError("The event data is corrupted."); // Should only happen if the event was never properly instanciated
+            textUserInterface.displayError("The event date is unreadable."); // Should only happen if the event was never properly instanciated
+            break;
           }
 
           int endDateStartIndex = pString.indexOf("End: ") + "End: ".length();
@@ -282,9 +284,18 @@ public class EventPerformanceController extends Controller {
           }
 
           if ((date.isBefore(endDate)||date.equals(endDate)) && (date.isAfter(startDate)||date.equals(startDate))) { // If the performance is on during a day that we are searching for.
-            textUserInterface.displaySpecificPerformance(p.toString());
+            performances += (
+              "Performance: " + p.getEventTitle() +"\n"
+              + "ID: " + p.getPerformanceID() +"\n"
+              + "Start time: " + p.getStartDateTime() +"\n"
+              + "End time: " + p.getEndDateTime() +"\n"
+              + "Venue: " + p.getVenueAddress() + "\n"
+              + "Provider: " + p.getEvent().getOrganiserEmail() +"\n"
+              + "Event's average rating: " + p.getEvent().getAverageRatingOfPerformances() +"\n"
+            );
           } else {textUserInterface.displayError("No results matching that date.");}
         }
+        textUserInterface.displaySpecificPerformance(performances);
   }
 
   public void viewPerformance() {

@@ -215,7 +215,12 @@ public class BookingController extends Controller {
 
       String comment = textUserInterface.getInput("Please provide a respectful but informative review on your experience: ");
 
-      performanceForReview.review(rating, comment);
+      if (comment.isBlank()) {
+        performanceForReview.review(rating, null);
+      }else{
+        performanceForReview.review(rating, comment);
+      }
+      
       textUserInterface.displaySuccess("Review submitted!");
     }
     

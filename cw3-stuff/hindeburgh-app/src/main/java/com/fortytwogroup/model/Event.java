@@ -82,10 +82,23 @@ public class Event {
   }
 
   public double getAverageRatingOfPerformances() {
-    return 0;
+    int sumOfRatings = 0;
+    for (Performance p : performances) { // Get average rating per performance
+      int sumOfPerformanceRatings = 0;   // by summing all the ratings in a performance
+      for (int rating : p.getReviewRatings()){
+        sumOfPerformanceRatings += rating;
+      }                                  // then dividing it by number of reviews 
+      sumOfRatings += (sumOfPerformanceRatings / p.getReviewRatings().size()); // then add to the total of average ratings per performance
+    }
+    sumOfRatings /= performances.size(); // Then divide that total by number of performances
+    return sumOfRatings;
   }
 
   public Collection<String> getAllPerformanceReviews() {
+    Collection<String> allReviews = new ArrayList<>();
+    for (Performance p : performances) {
+      allReviews.addAll(p.getReviewComments());
+    }
     return null;
   }
 
