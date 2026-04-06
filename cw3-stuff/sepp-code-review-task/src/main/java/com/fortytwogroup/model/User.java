@@ -20,7 +20,9 @@ public abstract class User {
    * @param email String containing the email address of the new user
    * @param password String containing the hashed password of the new user
    */
-  public User(String email, String password) {
+  public User(
+      String email,
+      String password) {
     this.email = email;
     this.password = password;
   }
@@ -33,7 +35,9 @@ public abstract class User {
    * @return true if the plaintext password, when hashed, matches the user instance's
    * hashed password, otherwise return false
    */
-  public boolean checkPasswordMatch(String inputPassword, PasswordService passwordService) {
+  public boolean checkPasswordMatch(
+      String inputPassword,
+      PasswordService passwordService) {
     if (this.password != null && inputPassword != null) {
       // argon will crash if password null
       return passwordService.checkPasswordMatch(this.password, inputPassword);

@@ -10,6 +10,9 @@ import com.fortytwogroup.view.TextUserInterface;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
+
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
@@ -29,15 +32,15 @@ public class LoginSystemTests {
     userStorage = new UserStorage();
     passwordService = new PasswordService();
     registrationUtility = new RegistrationUtility(
-        "src/main/resources/faculty.csv");
+        "src/test/resources/faculty.csv");
     userController = new UserController(
         userStorage, mockTextUserInterface, passwordService, registrationUtility);
   }
 
   @Test
   void testLogin_facultyMemberAddedToStorage() {
-    when(mockTextUserInterface.getEmailInput()).thenReturn("johndoe@gmail.com");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("12345");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("johndoe@gmail.com", "12345");
 
     userController.login();
 
@@ -48,13 +51,12 @@ public class LoginSystemTests {
   @Test
   void testLogin_logsInExistingUser() {
     // login non-existing faculty member first to create account for them
-    when(mockTextUserInterface.getEmailInput()).thenReturn("johndoe@gmail.com");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("12345");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("johndoe@gmail.com", "12345", "johndoe@gmail.com", "12345");
+
     userController.login();  // user should now be on system storage map
 
     // test that if they attempt to log in again there will be success since on system now
-    when(mockTextUserInterface.getEmailInput()).thenReturn("johndoe@gmail.com");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("12345");
     User result = userController.login();
 
     assertNotNull(result,
@@ -69,8 +71,8 @@ public class LoginSystemTests {
     User existingUser = new FacultyMember("existing@uni.ac.uk", hashedPassword);
     userStorage.addUserToMap("existing@uni.ac.uk", existingUser);
 
-    when(mockTextUserInterface.getEmailInput()).thenReturn("existing@uni.ac.uk");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("password123");
+    when(mockTextUserInterface.getUserInput(anyString())).
+        thenReturn("existing@uni.ac.uk", "password123");
 
     User result = userController.login();
 
@@ -85,14 +87,11 @@ public class LoginSystemTests {
     User existingUser = new FacultyMember("existing@uni.ac.uk", hashedPassword);
     userStorage.addUserToMap("existing@uni.ac.uk", existingUser);
 
-    when(mockTextUserInterface.getEmailInput()).thenReturn("existing@uni.ac.uk");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("incorrectpassword");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("existing@uni.ac.uk", "incorrectpassword")
+        .thenThrow(new RuntimeException("Simulated exit after failed login"));
 
-    User result = userController.login();
-
-    // faculty member trying to create account with wrong password should also be denied
-    assertNull(result, "If attempting to log in with incorrect password but correct"
-        + "email address, login attempt should be denied ");
+    assertThrows(RuntimeException.class, () -> userController.login());
   }
 
   @Test
@@ -101,13 +100,11 @@ public class LoginSystemTests {
     User existingUser = new FacultyMember("existing@uni.ac.uk", hashedPassword);
     userStorage.addUserToMap("existing@gmail.com", existingUser);
 
-    when(mockTextUserInterface.getEmailInput()).thenReturn("wrongEmail@gmail.com");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("password123");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("wrongEmail@gmail.com", "password123")
+        .thenThrow(new RuntimeException("Simulated exit after failed login"));
 
-    User result = userController.login();
-
-    assertNull(result, "If log in attempt has correct password but incorrect email"
-        + "address to match, deny login attempt");
+    assertThrows(RuntimeException.class, () -> userController.login());
   }
 
   @Test
@@ -116,24 +113,22 @@ public class LoginSystemTests {
     User existingUser = new FacultyMember("existing@uni.ac.uk", hashedPassword);
     userStorage.addUserToMap("existing@gmail.com", existingUser);
 
-    when(mockTextUserInterface.getEmailInput()).thenReturn("wrongEmail@gmail.com");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("incorrectpassword");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("wrongEmail@gmail.com", "incorrectpassword")
+        .thenThrow(new RuntimeException("Simulated exit after failed login"));
 
-    User result = userController.login();
-
-    assertNull(result, "If log in attempt has incorrect password and incorrect email"
-        + "deny login attempt");
+    assertThrows(RuntimeException.class, () -> userController.login());
   }
+
 
 
   @Test
   void testLogin_nullEmailInput() {
-    when(mockTextUserInterface.getEmailInput()).thenReturn(null);
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("password123");
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn(null)
+        .thenThrow(new RuntimeException("Simulated exit after null input"));
 
-    User result = userController.login();
-
-    assertNull(result, "Null email input should return null");
+    assertThrows(RuntimeException.class, () -> userController.login());
   }
 
 
@@ -147,8 +142,9 @@ public class LoginSystemTests {
     userStorage.addUserToMap("user2@uni.ac.uk", new FacultyMember("user2@uni.ac.uk", hashedPassword2));
     userStorage.addUserToMap("user3@uni.ac.uk", new FacultyMember("user3@uni.ac.uk", hashedPassword3));
 
-    when(mockTextUserInterface.getEmailInput()).thenReturn("user2@uni.ac.uk");
-    when(mockTextUserInterface.getPasswordInput()).thenReturn("password2");
+
+    when(mockTextUserInterface.getUserInput(anyString())).
+        thenReturn("user2@uni.ac.uk", "password2");
 
     User result = userController.login();
 
@@ -156,4 +152,12 @@ public class LoginSystemTests {
         + " on the system");
   }
 
+  @Test
+  void testLogin_facultyMemberWrongPassword() {
+    when(mockTextUserInterface.getUserInput(anyString()))
+        .thenReturn("johndoe@gmail.com", "wrongpassword")
+        .thenThrow(new RuntimeException("Simulated exit after failed login"));
+
+    assertThrows(RuntimeException.class, () -> userController.login());
+  }
 }

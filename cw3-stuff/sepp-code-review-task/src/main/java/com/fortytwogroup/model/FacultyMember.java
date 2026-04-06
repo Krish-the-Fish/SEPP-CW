@@ -13,20 +13,21 @@ public class FacultyMember extends User {
    * @param hashedPassword String containing the hashed password of the new
    * faculty member instance
    */
-  public FacultyMember(String emailAddress, String hashedPassword) {
+  public FacultyMember(
+      String emailAddress,
+      String hashedPassword) {
     super(emailAddress, hashedPassword);
     this.loginAttempts = 0;
 
 
   }
 
-
-
   /**
    * Getter for loginAttempts variable
    * @return login attempts variable for a given user object
    */
-  public int getLoginAttempts() { return loginAttempts; }
+  public int getLoginAttempts() {
+    return loginAttempts; }
 
 
   /**

@@ -52,63 +52,88 @@ public class UserController {
    */
   public User login() {
 
-    // call view to get email input
-    String inputEmail = textUserInterface.getEmailInput();
-    inputEmail = inputEmail.trim();
+    // declare here to cache when email correct but password wrong
+    String inputEmail = "";
 
+    while (true) {
+      String inputPassword = "";
 
-    // call view to get  password
-    String inputPassword = textUserInterface.getPasswordInput();
-    // will reject null passwords later on in method
+      while (inputEmail == null || inputEmail.isEmpty()) {
+        inputEmail = textUserInterface.getUserInput("Please enter your email address: ");
 
-    // check if already an account with the input email on the system
-    if (checkIfEmailOnSystem(inputEmail)) {
-      // query user storage to check get corresponding user object for email address
-      User correspondingUser = userStorage.getUserByEmail(inputEmail);
-
-      if (correspondingUser != null) {
-        // check if password match for that user
-        boolean isPasswordMatch =
-            correspondingUser.checkPasswordMatch(inputPassword, passwordService);
-
-        // increment login attempt if faculty member
-        if (correspondingUser instanceof FacultyMember) {
-          ((FacultyMember) correspondingUser).incrementLoginAttempts();
-        }
-
-        if (isPasswordMatch) {
-          // login successful if this is the case
-          return correspondingUser;
+        if (inputEmail.isEmpty()) {
+          textUserInterface.displayErrorMessage("No email address given. Please retry. ");
         }
       }
-    }
-    else{
-      // email not already on system if this else block executes
-      // check RegistrationUtility table
-      boolean inFacultyList = registrationUtility.verifyInFacultyFile(
-          inputEmail,
-          inputPassword,
-          passwordService);
 
-      if (inFacultyList) {
-        // create new faculty user
-        FacultyMember facultyMember = registrationUtility.registerFacultyMember(
+      // email is now okay to trim since null check passed if here
+      inputEmail = inputEmail.trim();
+
+      // call view to get  password
+      while (inputPassword == null || inputPassword.isEmpty()) {
+        inputPassword = textUserInterface.getUserInput("Please enter your password: ");
+
+        if (inputPassword.isEmpty()) {
+          textUserInterface.displayErrorMessage("No password given. Please retry. ");
+        }
+      }
+
+      // check if already an account with the input email on the system
+      if (checkIfEmailOnSystem(inputEmail)) {
+        // query user storage to check get corresponding user object for email address
+        User correspondingUser = userStorage.getUserByEmail(inputEmail);
+
+        if (correspondingUser != null) {
+          // check if password match for that user
+          boolean isPasswordMatch =
+              correspondingUser.checkPasswordMatch(inputPassword, passwordService);
+
+          // increment login attempt if faculty member
+          if (correspondingUser instanceof FacultyMember) {
+            ((FacultyMember) correspondingUser).incrementLoginAttempts();
+          }
+
+          if (isPasswordMatch) {
+            // login successful if this is the case
+            textUserInterface.displayGeneralMessage("You have successfully logged in.");
+            return correspondingUser;
+          }
+          else {
+            // reset for next while loop iteration so it asks for password inout again
+
+            // display wrong password error
+            textUserInterface.displayErrorMessage("Incorrect Password. Please retry. ");
+          }
+        }
+      } else {
+        // email not already on system if this else block executes
+        // check RegistrationUtility table
+        boolean inFacultyList = registrationUtility.verifyInFacultyFile(
             inputEmail,
-            passwordService.hashPlainTextPassword(inputPassword));
+            inputPassword,
+            passwordService);
 
-        // add the user to the systems map of registered users
-        userStorage.addUserToMap(inputEmail, facultyMember);
+        if (inFacultyList) {
+          // create new faculty user
+          FacultyMember facultyMember = registrationUtility.registerFacultyMember(
+              inputEmail,
+              passwordService.hashPlainTextPassword(inputPassword));
 
-        return facultyMember;
+          // add the user to the systems map of registered users
+          userStorage.addUserToMap(inputEmail, facultyMember);
 
+          textUserInterface.displayGeneralMessage("You have successfully logged in.");
+          return facultyMember;
+        }
+        else {
+          textUserInterface.displayErrorMessage("Incorrect email address or password. "
+              + "Please retry. ");
+          inputEmail = "";
+        }
       }
     }
-
-    // return null if login failed
-    textUserInterface.displayLoginErrorMessage();
-    return null;
-
   }
+
 
   /**
    * Checks if a given email address matches one in a User with an object already on the system

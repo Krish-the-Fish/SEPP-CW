@@ -173,6 +173,13 @@ public class BookingController extends Controller {
     int numTicketsSold = chosenPerformance.getNumTicketsSold();
     chosenPerformance.setNumTicketsSold(numTicketsSold + chosenNumTickets);
 
+    // update the sponsorship amount remaining variable
+    double amountOfSponsorshipUsed =
+        chosenNumTickets * chosenPerformance.getDiscountAmountPerTicket();
+
+    chosenPerformance.setSponsorshipAmountRemaining(
+        (chosenPerformance.getSponsorshipAmountRemaining() - amountOfSponsorshipUsed));
+
     textUserInterface.displaySuccess("Booking Successful");
 
     //generate and display booking record
@@ -319,7 +326,7 @@ public class BookingController extends Controller {
 
       if (p.getEvent().getEventId() == eventID) {
 
-        for (Booking b : p.getBookings()) {
+        for (Booking b : p.getAllBookings()) {
 
           result.add(b);
         }

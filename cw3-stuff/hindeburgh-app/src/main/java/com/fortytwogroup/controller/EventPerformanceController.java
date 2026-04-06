@@ -381,6 +381,13 @@ public class EventPerformanceController extends Controller {
   }
 
   public void sponsorPerformance() {
+
+    // defensive check, only admins can sponsor a performance
+    if (!checkCurrentUserIsAdmin()) {
+      textUserInterface.displayError("Only admins can sponsor a performance. ");
+      return;
+    }
+
     long performanceID = Long.parseLong(textUserInterface.getInput("Enter the performance ID: "));
     double sponsorshipAmount = Double.parseDouble(textUserInterface.getInput("Enter the sponsorship amount: "));
 

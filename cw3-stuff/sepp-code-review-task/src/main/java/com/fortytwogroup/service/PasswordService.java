@@ -33,7 +33,10 @@ public class PasswordService {
    * hashed itself
    * @return true if plain text password corresponds to hash, otherwise return false
    */
-  public boolean checkPasswordMatch(String hash, String queryPassword) {
+  public boolean checkPasswordMatch(
+      String hash,
+      String queryPassword) {
+
     return argon2.verify(hash, queryPassword.toCharArray());
   }
 }
