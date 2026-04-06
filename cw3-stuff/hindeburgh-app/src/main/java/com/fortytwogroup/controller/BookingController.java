@@ -116,7 +116,7 @@ public class BookingController extends Controller {
 
     // now check if performance has already been
     // if so, need to return error
-    if (chosenPerformance.getEndDateTime().isAfter(LocalDateTime.now())) {
+    if (chosenPerformance.getEndDateTime().isBefore(LocalDateTime.now())) {
       textUserInterface.displayError("Error: Performance has already happened!");
       return;
     }

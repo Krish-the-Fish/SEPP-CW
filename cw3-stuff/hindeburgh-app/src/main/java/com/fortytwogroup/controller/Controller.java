@@ -4,14 +4,19 @@ import com.fortytwogroup.model.AdminStaff;
 import com.fortytwogroup.model.EntertainmentProvider;
 import com.fortytwogroup.model.Student;
 import com.fortytwogroup.model.User;
+import com.fortytwogroup.view.TextUserInterface;
+import org.w3c.dom.Text;
 
+import java.util.ArrayList;
 import java.util.Collection;
 
 public abstract class Controller {
+  private TextUserInterface textUserInterface;
 
-  public Controller() {
-
+  protected void setTextUserInterface(TextUserInterface textUserInterface) {
+    this.textUserInterface = textUserInterface;
   }
+
   private User currentUser = null;
 
   public void setCurrentUser(User currentUser) {
@@ -43,14 +48,26 @@ public abstract class Controller {
   /* no name provided in spec for String parameter,
     therefore using item as suitable placeholder
    */
-  protected <T> int selectFromMenu(Collection<T> collection, String input) {
+  protected <T> int selectFromMenu(Collection<T> collection, String message) {
+    ArrayList<String> options = optionStrings(collection);
+    System.out.println(message);
+    System.out.println(String.join(", ", options));
+    String input = textUserInterface.getInput("");
     int counter = 0;
     for (T item : collection) {
-      if (input.equals(item.toString())) {
+      if (input.toUpperCase().equals(item.toString())) {
         return counter;
       }
       counter++;
     }
     return -1;
+  }
+
+  private <T> ArrayList<String> optionStrings(Collection<T> collection) {
+    ArrayList<String> options = new ArrayList<>();
+    for (T item : collection) {
+      options.add(item.toString());
+    }
+    return options;
   }
 }
