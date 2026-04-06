@@ -2,6 +2,7 @@ package com.fortytwogroup.model;
 
 import java.time.LocalDateTime;
 import java.util.Collection;
+import java.util.ArrayList;
 
 import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
@@ -58,7 +59,7 @@ public class Performance {
     this.status = PerformanceStatus.ACTIVE;
     this.event = event;
     this.sponsorshipAmountRemaining = sponsoredAmount;
-    
+    this.allBookings = new ArrayList<>();
 
   }
 

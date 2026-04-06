@@ -1,6 +1,7 @@
 package com.fortytwogroup.model;
 
 import java.util.Collection;
+import java.util.ArrayList;
 
 public class Student extends User {
   private String name;
@@ -17,6 +18,7 @@ public class Student extends User {
     this.name = name;
     this.phoneNumber = phoneNumber;
     this.preferences = new StudentPreferences();
+    this.studentBookings = new ArrayList<>();
   }
 
   public StudentPreferences getPreferenceClass() {
