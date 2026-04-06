@@ -1,6 +1,7 @@
 package com.fortytwogroup.model;
 
 import java.util.Collection;
+import java.util.ArrayList;
 
 public class EntertainmentProvider extends User {
   private String orgName;
@@ -21,6 +22,9 @@ public class EntertainmentProvider extends User {
     this.businessNumber = businessNumber;
     this.name = name;
     this.description = description;
+
+    this.events = new ArrayList<>();
+
   }
 
   public String getOrgName() {

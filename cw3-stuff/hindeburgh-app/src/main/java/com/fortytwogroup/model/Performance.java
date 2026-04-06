@@ -3,6 +3,7 @@ package com.fortytwogroup.model;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.ArrayList;
 
 import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
@@ -62,6 +63,7 @@ public class Performance {
     this.allBookings = new ArrayList<Booking>();
     this.reviewRatings = new ArrayList<Integer>();
     this.reviewComments = new ArrayList<String>();
+
   }
 
   public Collection<Integer> getReviewRatings() {
@@ -191,7 +193,8 @@ public class Performance {
   public void sponsor(double amount) {
     if (event.getIsTicketed()) {
       isSponsored = true;
-      sponsoredAmount = amount;
+      sponsoredAmount += amount;  // allow for multiple sponsorships
+      sponsorshipAmountRemaining += amount;  // allow for multiple sponsorships
     }
   }
 
