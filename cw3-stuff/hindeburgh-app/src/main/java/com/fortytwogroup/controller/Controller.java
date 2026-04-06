@@ -43,7 +43,14 @@ public abstract class Controller {
   /* no name provided in spec for String parameter,
     therefore using item as suitable placeholder
    */
-  protected <T> int selectFromMenu(Collection<T> collection, String item) {
-    return 0;
+  protected <T> int selectFromMenu(Collection<T> collection, String input) {
+    int counter = 0;
+    for (T item : collection) {
+      if (input.equals(item.toString())) {
+        return counter;
+      }
+      counter++;
+    }
+    return -1;
   }
 }
