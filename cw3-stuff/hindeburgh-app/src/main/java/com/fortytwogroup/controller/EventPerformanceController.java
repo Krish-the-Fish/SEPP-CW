@@ -6,6 +6,7 @@ import com.fortytwogroup.model.Event;
 import com.fortytwogroup.model.Performance;
 import com.fortytwogroup.model.enums.EventType;
 import com.fortytwogroup.view.TextUserInterface;
+
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -237,281 +238,53 @@ public class EventPerformanceController extends Controller {
 
   }
 
+  /**
+     * The student can search for performances that are happening on a specific date.
+     * They type the day in the YYYY-MM-DD format.
+     * The system knows the day a specific Performance object has by getting the 
+     * substring of the toString()'ed performance object at the appropriate section.
+     *
+     * @param DateString        The date of the performances that the student wishes to search for.
+     * @return                  Group of performances, that have a performance on that date and fit the student preferences, are printed line by line.
+     */
   public void searchForPerformances() {
-    String searchParameter = textUserInterface.getInput(
-        "Do you wish to search by..."
-            + "\n1 - Start Date"
-            + "\n2 - End Date"
-            + "\n3 - Performer Name"
-            + "\n4 - Venue Address"
-            + "\n5 - Venue Capacity"
-            + "\n6 - Venue is Outdoors"
-            + "\n7 - Venue allows smoking"
-            + "\n8 - Number of tickets available"
-            + "\n9 - Ticket price"
-            + "\n10 - If event is finished"
-            + "\n11 - If event is cancelled\n?\n");
+    String dateString = textUserInterface.getInput("Enter start date to search for as YYYY-MM-DD: ");
 
-    switch (searchParameter) {
-      case "1": // Search by start date. Definitely room to upgrade it for before and after and it's probably a good idea
-        String startDateString = textUserInterface.getInput("Enter start date to search for as YYYY-MM-DD: ");
-
-        if (!checkValidEventDateStringFormat(startDateString)) {
+        if (!checkValidEventDateStringFormat(dateString)) {
           textUserInterface.displayError("Invalid date format. Ensure a proper date is entered.");
           return;
         }
 
-        LocalDate startDate = LocalDate.parse(startDateString);
+        LocalDate date = LocalDate.parse(dateString);
 
         for (Performance p : this.performances) {
           String pString = p.toString();
 
-            /* Getting the indices of the relevant part of the performance
-              string so that I only look at the necessary info and can compare it
-             */
-          int start = pString.indexOf("Start: ") + "Start: ".length();
-          int end = pString.indexOf("\nEnd: ");
+          // Getting the string of the performance then getting the substring containing the dates.
+          int startDateStartIndex = pString.indexOf("Start: ") + "Start: ".length();
+          int startDateEndIndex = pString.indexOf("\nEnd: "); 
 
-          /* In the next block and using the above indices, something along the lines of
+          LocalDate startDate = null;
+          try {
+              startDate = date.parse(pString.substring(startDateStartIndex, startDateEndIndex));
+          } catch (Exception e) {
+            textUserInterface.displayError("The event data is corrupted."); // Should only happen if the event was never properly instanciated
+          }
 
-            "Start: startDateTime
-            End: + endDateTime
-            Performers: performer0, performer1, ...
-            ..."
+          int endDateStartIndex = pString.indexOf("End: ") + "End: ".length();
+          int endDateEndIndex = pString.indexOf("\nPerformers: ");
 
-            becomes just
+          LocalDate endDate = null;
+          try {
+              endDate = date.parse(pString.substring(endDateStartIndex, endDateEndIndex));
+          } catch (Exception e) {
+            textUserInterface.displayError("The event data is corrupted."); // Should only happen if the event was never properly instanciated
+          }
 
-            "startDateTime"
-
-            then I can compare to the entered date.
-            */
-          if (pString.substring(start, end).equals(startDate.toString())) {
+          if ((date.isBefore(endDate)||date.equals(endDate)) && (date.isAfter(startDate)||date.equals(startDate))) { // If the performance is on during a day that we are searching for.
             textUserInterface.displaySpecificPerformance(p.toString());
           } else {textUserInterface.displayError("No results matching that date.");}
         }
-        break;
-      case "2": // Search by end date. Definitely room to upgrade it for before and after and it's probably a good idea
-        String endDateRawString = textUserInterface.getInput("Enter end date to search for as YYYY-MM-DD: ");
-
-        if (!checkValidEventDateStringFormat(endDateRawString)) {
-          textUserInterface.displayError("Invalid date format. Ensure a proper date is entered.");
-          return;
-        }
-
-        LocalDate endDate = LocalDate.parse(endDateRawString);
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("End: ") + "End: ".length();
-          int end = pString.indexOf("\nPerformers: ");
-
-          if (pString.substring(start, end).equals(endDate.toString())) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          } else {textUserInterface.displayError("No results matching that date.");}
-        }
-        break;
-      case "3": // Search by performer name
-        String performerName = textUserInterface.getInput("Enter performer name to search for: ");
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("Performers: ") + "Performers: ".length();
-          int end = pString.indexOf("\nVenue Address: ");
-
-          if (pString.substring(start, end).contains(performerName)) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          } else {textUserInterface.displayError("No results matching that performer name.");}
-        }
-        break;
-      case "4": // Search by venue address
-        String venueAddress = textUserInterface.getInput("Enter venue address to search for: ");
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("Venue Address: ") + "Venue Address: ".length();
-          int end = pString.indexOf("\nVenue Capacity: ");
-
-          if (pString.substring(start, end).equals(venueAddress)) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          } else {textUserInterface.displayError("No results matching that address.");}
-        }
-        break;
-      case "5": // Search by venue capacity. Definitely room to upgrade it for greater than and less than
-        String venueCapacityString = textUserInterface.getInput("Enter venue capacity to search for: ");
-
-        try{
-          int venueCapacity = Integer.parseInt(venueCapacityString);
-
-          for (Performance p : this.performances) {
-
-            String pString = p.toString();
-            int start = pString.indexOf("Venue Capacity: ") + "Venue Capacity: ".length();
-            int end = pString.indexOf("\nVenue is Outdoors: ");
-
-            if (pString.substring(start, end).equals(venueCapacity)) {
-              textUserInterface.displaySpecificPerformance(p.toString());
-            }
-          }
-        }
-        catch (NumberFormatException e) {
-          textUserInterface.displayError("Please enter a valid integer");
-          return;
-        }
-        break;
-      case "6": // Search by whether venue is outdoors
-        String venueIsOutdoorsString = textUserInterface.getInput("Is the venue outdoors? (yes/no): ");
-        Boolean venueIsOutdoors = false;
-        switch (venueIsOutdoorsString.toLowerCase()) {
-          case "y":
-            venueIsOutdoors = true;
-            break;
-          case "n":
-            venueIsOutdoors = false;
-            break;
-          default:
-            textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
-            break;
-        }
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("Outdoors: ") + "Outdoors: ".length();
-          int end = pString.indexOf("\nSmoking Allowed: ");
-
-          if (pString.substring(start, end).equals(venueIsOutdoors.toString())) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          }
-        }
-        break;
-      case "7": // Search by whether venue allows smoking
-        String venueAllowsSmokingString = textUserInterface.getInput("Does the venue allow smoking? (yes/no): ");
-        Boolean venueAllowsSmoking = false;
-        switch (venueAllowsSmokingString.toLowerCase()) {
-          case "y":
-            venueAllowsSmoking = true;
-            break;
-          case "n":
-            venueAllowsSmoking = false;
-            break;
-          default:
-            textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
-            break;
-        }
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("Smoking Allowed: ") + "Smoking Allowed: ".length();
-          int end = pString.indexOf("\nTickets Total: ");
-
-          if (pString.substring(start, end).equals(venueAllowsSmoking.toString())) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          }
-        }
-        break;
-      case "8": // Search by number of tickets available
-        String numTicketsAvailableString = textUserInterface.getInput("Enter number of tickets you are looking for: ");
-        try{
-          int numTicketsAvailable = Integer.parseInt(numTicketsAvailableString);
-
-          for (Performance p : this.performances) {
-
-            String pString = p.toString();
-            int start = pString.indexOf("Tickets Total: ") + "Tickets Total: ".length();
-            int end = pString.indexOf("\nTickets Sold: ");
-
-            if (p.toString().substring(start, end).equals(numTicketsAvailable)) {
-              textUserInterface.displaySpecificPerformance(p.toString());
-            }
-          }
-        }
-        catch (NumberFormatException e) {
-          textUserInterface.displayError("Please enter a valid integer");
-          return;
-        }
-        break;
-      case "9": // Search by ticket price
-        String ticketPriceString = textUserInterface.getInput("Enter desired ticket price: ");
-        try{
-          double ticketPrice = Double.parseDouble(ticketPriceString);
-
-          for (Performance p : this.performances) {
-
-            String pString = p.toString();
-            int start = pString.indexOf("Ticket Price: ") + "Ticket Price: ".length();
-            int end = pString.indexOf("\nStatus: ");
-
-            if (pString.substring(start, end).equals(Double.toString(ticketPrice))) {
-              textUserInterface.displaySpecificPerformance(p.toString());
-            }
-          }
-        }
-        catch (NumberFormatException e) {
-          textUserInterface.displayError("Please enter a valid number");
-          return;
-        }
-        break;
-      case "10": // Search by whether event is finished or not
-        String eventIsFinishedString = textUserInterface.getInput("Has the event finished? (yes/no): ");
-        Boolean eventIsFinished = false;
-        switch (eventIsFinishedString.toLowerCase()) {
-          case "y":
-            eventIsFinished = true;
-            break;
-          case "n":
-            eventIsFinished = false;
-            break;
-          default:
-            textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
-            break;
-        }
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("End: ") + "End: ".length();
-          int finished = pString.indexOf("\nPerformers: ");
-
-          // If "the event is finished (true) AND the user wants finished events (true)", OR "if the event is not finished (false) AND the user wants not finished events (false)", then show the performance
-          if (LocalDate.parse(pString.substring(start, finished)).isAfter(LocalDate.now()) == eventIsFinished) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          }
-        }
-        break;
-      case "11": // Search by whether event is cancelled or not
-        String eventIsCancelledString = textUserInterface.getInput("Is the event cancelled? (yes/no): ");
-        Boolean eventIsCancelled = false;
-        switch (eventIsCancelledString.toLowerCase()) {
-          case "y":
-            eventIsCancelled = true;
-            break;
-          case "n":
-            eventIsCancelled = false;
-            break;
-          default:
-            textUserInterface.displayError("Incorrect input. Please enter 'y' or 'n'");
-            break;
-        }
-
-        for (Performance p : this.performances) {
-
-          String pString = p.toString();
-          int start = pString.indexOf("Status: ") + "Status: ".length();
-          int end = pString.indexOf("\n");
-
-          // If "the event is cancelled (true) AND the user wants cancelled events (true)", OR "if the event is not active (false) AND the user wants active events (false)", then show the performance
-          if (pString.substring(start, end).equals("CANCELLED") == eventIsCancelled) {
-            textUserInterface.displaySpecificPerformance(p.toString());
-          }
-        }
-        break;
-
-    }
-
-
   }
 
   public void viewPerformance() {
@@ -528,8 +301,21 @@ public class EventPerformanceController extends Controller {
 
   }
 
+  /**
+     * Cancels the performance by getting the performance id, searching for a 
+     * performance that matches that ID, and then passing the details of all
+     * the students that need to get refunded to the payment system. Once 
+     * the EP knows it was a success, the use case ends.
+     * 
+     */
   public void cancelPerformance() {
-    long cancelledPerformanceID = Long.parseLong(textUserInterface.getInput("Enter ID of performance to cancel: "));
+    long cancelledPerformanceID;
+    try {
+        cancelledPerformanceID = Long.parseLong(textUserInterface.getInput("Enter ID of performance to cancel: "));
+    } catch (NumberFormatException e) {
+      textUserInterface.displayError("That is not a valid performance ID.");
+      return;
+    }
     Performance cancelledPerformance = getPerformanceByID(cancelledPerformanceID);
 
     if (cancelledPerformance == null) {
@@ -537,48 +323,45 @@ public class EventPerformanceController extends Controller {
       return;
     }
 
-    long ID = cancelledPerformance.getPerformanceId();
-    if (ID == cancelledPerformanceID) { // Found a match for what the user entered
-      EntertainmentProvider currentUser = (EntertainmentProvider) getCurrentUser();
+    EntertainmentProvider currentUser = (EntertainmentProvider) getCurrentUser();
 
-      String email = currentUser.getEmail();
-      Boolean sameEP = cancelledPerformance.checkCreatedByEP(email);
-      if (sameEP) { // If the EP requesting to cancel is the one that created the event
-        if (cancelledPerformance.checkHasNotHappenedYet()){
+    String email = currentUser.getEmail();
+    Boolean sameEP = cancelledPerformance.checkCreatedByEP(email);
+    if (sameEP) { // If the EP requesting to cancel is the one that created the event
+      if (cancelledPerformance.checkHasNotHappenedYet()){ // and the event has not happened yet
 
-          String organiserMessage = textUserInterface.getInput("Provide a cancellation method for affected students: ");
-          if (organiserMessage == null) {
-            textUserInterface.displayError("Please provide a non-empty message for the students.");
-            return;
-          }
+        String organiserMessage = textUserInterface.getInput("Provide a cancellation method for affected students: ");
+        if (organiserMessage == null) {
+          textUserInterface.displayError("Please provide a non-empty message for the students.");
+          return;
+        }
 
-          Boolean hasActiveBookings = cancelledPerformance.hasActiveBookings();
-          if (hasActiveBookings) {
-            String eventTitle = cancelledPerformance.getEventTitle();
-            String bookingDetailsForRefund = cancelledPerformance.getBookingDetailsForRefund();
-            for (String refundedBooking : bookingDetailsForRefund.split("\n---\n")){
-              int numTickets = Integer.parseInt(refundedBooking.substring(refundedBooking.indexOf("Number of tickets purchased: ") + "Number of tickets purchased: ".length()));
+        Boolean hasActiveBookings = cancelledPerformance.hasActiveBookings();
+        if (hasActiveBookings) {
+          String eventTitle = cancelledPerformance.getEventTitle();
+          String bookingDetailsForRefund = cancelledPerformance.getBookingDetailsForRefund();
+          for (String refundedBooking : bookingDetailsForRefund.split("\n---\n")){
+            int numTickets = Integer.parseInt(refundedBooking.substring(refundedBooking.indexOf("Number of tickets purchased: ") + "Number of tickets purchased: ".length()));
 
-              double transactionAmount = Double.parseDouble(refundedBooking.substring(refundedBooking.indexOf("Amount paid: ") + "Amount paid: ".length(), refundedBooking.indexOf("\nNumber of tickets purchased: ")));
+            double transactionAmount = Double.parseDouble(refundedBooking.substring(refundedBooking.indexOf("Amount paid: ") + "Amount paid: ".length(), refundedBooking.indexOf("\nNumber of tickets purchased: ")));
 
-              String studentDetails = refundedBooking.substring(refundedBooking.indexOf("Student details: ") + "Student details: ".length(), refundedBooking.indexOf("\nAmount paid: "));
-              String studentEmail = studentDetails.substring(studentDetails.indexOf("Student email: ") + "Student email: ".length(), studentDetails.indexOf("\n"));
-              int studentPhone = Integer.parseInt(studentDetails.substring(studentDetails.indexOf("Student phone: ") + "Student phone: ".length()));
+            String studentDetails = refundedBooking.substring(refundedBooking.indexOf("Student details: ") + "Student details: ".length(), refundedBooking.indexOf("\nAmount paid: "));
+            String studentEmail = studentDetails.substring(studentDetails.indexOf("Student email: ") + "Student email: ".length(), studentDetails.indexOf("\n"));
+            int studentPhone = Integer.parseInt(studentDetails.substring(studentDetails.indexOf("Student phone: ") + "Student phone: ".length()));
 
-              Boolean refundSuccessful = mockPaymentSystem.processRefund(numTickets, eventTitle, studentEmail, studentPhone, email, transactionAmount, organiserMessage);
-              if (refundSuccessful) {
-                cancelledPerformance.cancel();
-                textUserInterface.displaySuccess("Cancellation Successful!");
-              }
+            Boolean refundSuccessful = mockPaymentSystem.processRefund(numTickets, eventTitle, studentEmail, studentPhone, email, transactionAmount, organiserMessage);
+            if (refundSuccessful) {
+              cancelledPerformance.cancel();
+              textUserInterface.displaySuccess("Cancellation Successful!");
             }
           }
-        }else{
-          textUserInterface.displayError("Performance can't be cancelled as it has already happened.");
         }
+      }else{
+        textUserInterface.displayError("Performance can't be cancelled as it has already happened.");
       }
-      else{
-        textUserInterface.displayError("You cannot cancel a performance that you did not create.");
-      }
+    }
+    else{
+      textUserInterface.displayError("You cannot cancel a performance that you did not create.");
     }
   }
 
