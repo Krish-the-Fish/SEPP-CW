@@ -35,6 +35,7 @@ public class UserStorage {
    * @return true if key matches one in system's map of users, otherwise returns false
    */
   public boolean checkIfEmailOnSystem(String email) {
+
     return this.users.containsKey(email);
   }
 
@@ -44,7 +45,10 @@ public class UserStorage {
    * @param email String containing the email address of a new user
    * @param user user object corresponding to the email String
    */
-  public void addUserToMap(String email, User user) {
+  public void addUserToMap(
+      String email,
+      User user) {
+
     users.put(email, user);
   }
 

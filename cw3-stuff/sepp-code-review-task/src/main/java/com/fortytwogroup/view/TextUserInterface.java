@@ -9,30 +9,31 @@ import java.util.Scanner;
 public class TextUserInterface {
 
   /**
-   * Prompts user to input email address in the cli and accepts input as type String
+   * Prompts user using the message argument to enter  the cli and accepts input as type String
+   * @param prompt String containing a message for the user to prompt them to enter info
    * @return String containing raw input from cli
    */
-  public String getEmailInput() {
+  public String getUserInput(String prompt) {
     Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter your email address: ");
+    System.out.print(prompt);
     return scanner.nextLine();
   }
 
-  /**
-   * Prompts user to enter their account password in the cli and accepts input type String
-   * @return String containing raw input from the cli
-   */
-  public String getPasswordInput() {
-    Scanner scanner = new Scanner(System.in);
-    System.out.print("Enter your password: ");
-    return scanner.nextLine();
-  }
 
   /**
    * Displays a login failure message
+   * @param errorMessage error message to be returned when method invoked
    */
-  public void displayLoginErrorMessage() {
-    System.out.println("Login Failed");
+  public void displayErrorMessage(String errorMessage) {
+    System.out.println(errorMessage);
+  }
+
+  /**
+   * Displays a general failure message
+   * @param message message to be returned when method invoked
+   */
+  public void displayGeneralMessage(String message) {
+    System.out.println(message);
   }
 
 }

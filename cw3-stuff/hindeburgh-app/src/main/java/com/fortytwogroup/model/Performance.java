@@ -25,7 +25,8 @@ public class Performance {
   private PerformanceStatus status;
   private Event event;  // reference to the event that contains the performance
   // including inactive bookings in allBookings variable for possible auditing purposes
-  private Collection<Booking> allBookings;
+  private Collection<Booking> allBookings;  // bookings for just this performance
+  private double sponsorshipAmountRemaining;
 
   public Performance(
     long performanceId, 
@@ -56,8 +57,21 @@ public class Performance {
     this.sponsoredAmount = 0;
     this.status = PerformanceStatus.ACTIVE;
     this.event = event;
+    this.sponsorshipAmountRemaining = sponsoredAmount;
     
 
+  }
+
+  public Collection<Integer> getReviewRatings() {
+    return reviewRatings;
+  }
+
+  public Collection<String> getReviewComments() {
+    return reviewComments;
+  }
+
+  public String getVenueAddress() {
+    return venueAddress;
   }
 
   public LocalDateTime getStartDateTime() {
@@ -95,8 +109,41 @@ public class Performance {
     return true;
   }
 
+  /**
+   * Method assumes that there are still tickets remaining. Gets final ticket price of a single
+   * ticket at time of buying
+   * @return amount
+   */
   public double getFinalTicketPrice() {
-    return 0;
+    // will evenly distribute the sponsorship amount among the remaining tickets
+    // defensive check to prevent division by zero
+    if (numTicketsSold == numTicketsTotal) {
+      // no tickets left
+      return 0;
+    }
+
+    double reductionPerTicket = getDiscountAmountPerTicket();
+    double discountedTicketPrice = ticketPrice - reductionPerTicket;
+
+    // make sure we don't accidentally owe them money
+    if (discountedTicketPrice < 0){
+      return 0;
+    }
+    else {
+      return discountedTicketPrice;
+    }
+
+  }
+
+  public double getDiscountAmountPerTicket() {
+
+    // defensive check to avoid division by 0
+    if (numTicketsSold == numTicketsTotal) {
+      return 0;
+    }
+
+    double discountPerTicket= sponsorshipAmountRemaining/(numTicketsTotal - numTicketsSold);
+    return discountPerTicket;
   }
 
   public String getOrganiserEmail(){
@@ -147,7 +194,7 @@ public class Performance {
   }
 
   public void review(int rating, String comment) {
-    if (!checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
+    if (checkHasNotHappenedYet() && rating >= 1 && rating <= 5) {
       reviewRatings.add(rating);
 
       if (comment != null && !comment.isEmpty()) {
@@ -223,5 +270,15 @@ public class Performance {
     numTicketsSold = newTicketsSoldValue;
   }
 
+  public Collection<Booking> getAllBookings() {
+    return allBookings;
+  }
 
+  public double getSponsorshipAmountRemaining() {
+    return this.sponsorshipAmountRemaining;
+  }
+
+  public void setSponsorshipAmountRemaining(double amount) {
+    this.sponsorshipAmountRemaining = amount;
+  }
 }

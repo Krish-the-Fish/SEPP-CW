@@ -55,8 +55,7 @@ public class RegistrationUtility {
           return row.get("password");
         }
       }
-    }
-    catch (Exception e) {
+    } catch (Exception e) {
       e.printStackTrace();
       return null;
     }
@@ -77,14 +76,15 @@ public class RegistrationUtility {
    * equality checking
    * @return true if input password matches one in file when hashed, otherwise return false
    */
-  public boolean verifyInFacultyFile(String emailAddress,
+  public boolean verifyInFacultyFile(
+      String emailAddress,
       String password,
       PasswordService passwordService) {
 
     String actualPassword = checkFacultyFileForEmailPassword(emailAddress);
 
     if (actualPassword != null && password != null) {
-      return passwordService.checkPasswordMatch(password, actualPassword);
+      return passwordService.checkPasswordMatch(actualPassword, password);
     }
 
     // either csv had a blank entry, didn't have email or input password was null
