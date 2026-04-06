@@ -1,9 +1,11 @@
 package com.fortytwogroup.controller;
 
 import com.fortytwogroup.external.MockPaymentSystem;
+import com.fortytwogroup.model.Booking;
 import com.fortytwogroup.model.EntertainmentProvider;
 import com.fortytwogroup.model.Event;
 import com.fortytwogroup.model.Performance;
+import com.fortytwogroup.model.User;
 import com.fortytwogroup.model.enums.EventType;
 import com.fortytwogroup.view.TextUserInterface;
 
@@ -327,64 +329,148 @@ public class EventPerformanceController extends Controller {
      * 
      */
   public void cancelPerformance() {
-    long cancelledPerformanceID;
-    try {
-        cancelledPerformanceID = Long.parseLong(textUserInterface.getInput("Enter ID of performance to cancel: "));
-    } catch (NumberFormatException e) {
-      textUserInterface.displayError("That is not a valid performance ID.");
-      return;
-    }
-    Performance cancelledPerformance = getPerformanceByID(cancelledPerformanceID);
 
-    if (cancelledPerformance == null) {
-      textUserInterface.displayError("No performance found with that ID");
-      return;
-    }
+    Performance performanceToCancel = null;
+    boolean sameEP = false;
+    boolean hasNotHappenedYet = false;
 
-    EntertainmentProvider currentUser = (EntertainmentProvider) getCurrentUser();
+    while(performanceToCancel == null || !sameEP || !hasNotHappenedYet) {
+      String performaceToCancelIDString = textUserInterface.getInput(
+          "Enter ID of performance to cancel: ");
 
-    String email = currentUser.getEmail();
-    Boolean sameEP = cancelledPerformance.checkCreatedByEP(email);
-    if (sameEP) { // If the EP requesting to cancel is the one that created the event
-      if (cancelledPerformance.checkHasNotHappenedYet()){ // and the event has not happened yet
+      long cancelledPerformanceID = -1; // suitable sentinel as ID cannot be negative
 
-        String organiserMessage = textUserInterface.getInput("Provide a cancellation method for affected students: ");
-        if (organiserMessage == null) {
-          textUserInterface.displayError("Please provide a non-empty message for the students.");
-          return;
-        }
+      try {
+        cancelledPerformanceID = Long.parseLong(performaceToCancelIDString);
 
-        Boolean hasActiveBookings = cancelledPerformance.hasActiveBookings();
-        if (hasActiveBookings) {
-          String eventTitle = cancelledPerformance.getEventTitle();
-          String bookingDetailsForRefund = cancelledPerformance.getBookingDetailsForRefund();
-          for (String refundedBooking : bookingDetailsForRefund.split("\n---\n")){
-            int numTickets = Integer.parseInt(refundedBooking.substring(refundedBooking.indexOf("Number of tickets purchased: ") + "Number of tickets purchased: ".length()));
+      }
+      catch (NumberFormatException e) {
+        textUserInterface.displayError("Performance ID entered is in invalid format. "
+            + "Please try again.");
+        continue;
+      }
 
-            double transactionAmount = Double.parseDouble(refundedBooking.substring(refundedBooking.indexOf("Amount paid: ") + "Amount paid: ".length(), refundedBooking.indexOf("\nNumber of tickets purchased: ")));
+      performanceToCancel = getPerformanceByID(cancelledPerformanceID);
 
-            String studentDetails = refundedBooking.substring(refundedBooking.indexOf("Student details: ") + "Student details: ".length(), refundedBooking.indexOf("\nAmount paid: "));
-            String studentEmail = studentDetails.substring(studentDetails.indexOf("Student email: ") + "Student email: ".length(), studentDetails.indexOf("\n"));
-            int studentPhone = Integer.parseInt(studentDetails.substring(studentDetails.indexOf("Student phone: ") + "Student phone: ".length()));
+      if (performanceToCancel == null) {
+        textUserInterface.displayError(
+            "Performance with given number does not exist.");
+        continue;
+      }
 
-            Boolean refundSuccessful = mockPaymentSystem.processRefund(numTickets, eventTitle, studentEmail, studentPhone, email, transactionAmount, organiserMessage);
-            if (refundSuccessful) {
-              cancelledPerformance.cancel();
-              textUserInterface.displaySuccess("Cancellation Successful!");
-            }
-          }
-        }
-      }else{
-        textUserInterface.displayError("Performance can't be cancelled as it has already happened.");
+      User currentEP = getCurrentUser();
+
+      // defensive check to see if current user is an EP
+      if (!checkCurrentUserIsEntertainmentProvider()){
+        textUserInterface.displayError(
+            "Error: only EntertainmentProviders are permitted to cancel performances.");
+        return;  // return instead of continue is deliberate here
+      }
+
+      // type cast to EP object
+      // safe to do so due to defensive check above
+      EntertainmentProvider eP = (EntertainmentProvider) currentEP;
+
+      String email = eP.getEmail();
+
+      sameEP = performanceToCancel.checkCreatedByEP(email);
+
+      if (!sameEP) {
+        textUserInterface.displayError(
+            "The performance with given number does not belong to you.");
+        continue;
+      }
+
+      hasNotHappenedYet = performanceToCancel.checkHasNotHappenedYet();
+
+      if (!hasNotHappenedYet) {
+        textUserInterface.displayError(
+            "Performance can't be cancelled as it has already happened.");
+        continue;
       }
     }
-    else{
-      textUserInterface.displayError("You cannot cancel a performance that you did not create.");
+
+    String organiserMessage = null;
+    while (organiserMessage == null || organiserMessage.isEmpty()){
+      organiserMessage = textUserInterface.getInput(
+          "Provide a cancellation message for affected students");
+
+      if (organiserMessage == null || organiserMessage.isEmpty()) {
+        textUserInterface.displayError(
+            "Please provide a non-empty message for the students");
+      }
     }
+
+    boolean hasActiveBookings = performanceToCancel.hasActiveBookings();
+    String bookingDetailsForRefund = "";
+    // if has active bookings, need to notify users and provide refunds
+    String eventTitle = "";
+    String epEmail = "";
+    if (hasActiveBookings) {
+      eventTitle = performanceToCancel.getEventTitle();
+
+      EntertainmentProvider currentEP = (EntertainmentProvider) getCurrentUser();
+
+      epEmail = currentEP.getEmail();
+
+      bookingDetailsForRefund = performanceToCancel.getBookingDetailsForRefund();
+    }
+
+    if (!bookingDetailsForRefund.isEmpty()) {
+      for (String refundedBooking : bookingDetailsForRefund.split("\n---\n")){
+        int numTickets = Integer.parseInt(refundedBooking.substring(refundedBooking.indexOf("Number of tickets purchased: ") + "Number of tickets purchased: ".length()));
+
+        double transactionAmount = Double.parseDouble(refundedBooking.substring(refundedBooking.indexOf("Amount paid: ") + "Amount paid: ".length(), refundedBooking.indexOf("\nNumber of tickets purchased: ")));
+
+        String studentDetails = refundedBooking.substring(refundedBooking.indexOf("Student details: ") + "Student details: ".length(), refundedBooking.indexOf("\nAmount paid: "));
+        String studentEmail = studentDetails.substring(studentDetails.indexOf("Student email: ") + "Student email: ".length(), studentDetails.indexOf("\n"));
+        int studentPhone = Integer.parseInt(studentDetails.substring(studentDetails.indexOf("Student phone: ") + "Student phone: ".length()));
+
+        Boolean refundSuccessful = mockPaymentSystem.processRefund(numTickets, eventTitle, studentEmail, studentPhone, epEmail, transactionAmount, organiserMessage);
+        // Assuming sequence diagram meant !refundSuccessful as no paymentSuccessful var in scope
+        if (!refundSuccessful) {
+          textUserInterface.displayError("There was an issue with a refund. "
+              + "The performance cannot be cancelled");
+
+          // performance cannot be cancelled if there's at least one refund failure?
+          return;  // deliberate early return here
+        }
+
+      }
+    }
+
+    Collection<Booking> bookingsToCancel = performanceToCancel.getAllBookings();
+
+    for (Booking booking : bookingsToCancel) {
+      booking.cancelByProvider();
+
+    }
+
+    performanceToCancel.cancel();
+    textUserInterface.displaySuccess("Cancellation Successful!");
+
   }
 
   private boolean checkIfSponsorshipPossible(Performance performance, double amount) {
-    return (performance.checkIfEventIsTicketed());
+    boolean isTicketed = performance.checkIfEventIsTicketed();
+
+    if (!isTicketed) {
+      textUserInterface.displayError("The requested performance's event is "
+          + "not ticketed. It cannot be sponsored.");
+
+      return false;
+    }
+
+    // check ticket price
+    double ticketPrice = performance.getTicketPrice();
+
+    if (amount < 0 || amount > ticketPrice) {
+      textUserInterface.displayError("The amount provided is invalid.");
+      return false;
+    }
+
+    // if got to here, all good
+    return true;
   }
 
   public void sponsorPerformance() {
@@ -395,27 +481,70 @@ public class EventPerformanceController extends Controller {
       return;
     }
 
-    long performanceID = Long.parseLong(textUserInterface.getInput("Enter the performance ID: "));
-    double sponsorshipAmount = Double.parseDouble(textUserInterface.getInput("Enter the sponsorship amount: "));
 
-    Performance sponsoredPerformance = getPerformanceByID(performanceID);
-    if (sponsoredPerformance == null) {
-      textUserInterface.displayError("Performance with given number does not exist");
-      return;
-    }
-    if (checkIfSponsorshipPossible(sponsoredPerformance, sponsorshipAmount)){
-      double ticketPrice = sponsoredPerformance.getFinalTicketPrice();
-      if (sponsorshipAmount < 0 || sponsorshipAmount > ticketPrice){
-        textUserInterface.displayError("The amount provided is invalid.");
-        return;
+    // IMPLEMENT WHILE LOOP LOGIC HERE
+
+    Performance performanceToSponsor = null;
+    boolean possible = false;
+    boolean isTicketed = true;
+
+    long performanceID = -1;  // suitable sentinel as performanceID's cannot be valid
+    double sponsorshipAmount = 0;
+
+    while(performanceToSponsor == null || (!possible && isTicketed)) {
+      String performanceIDString = textUserInterface.getInput("Enter performance ID: ");
+
+      try{
+        performanceID = Long.parseLong(performanceIDString);
+
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("Error: invalid performance ID entered. "
+            + "Please try again. ");
+        continue;
       }
-      sponsoredPerformance.sponsor(sponsorshipAmount); // All checks passed: performance can be sponsored
-      textUserInterface.displaySuccess("Sponsorship successful!");
-    }else{
-      textUserInterface.displayError("The requested performance's event is non ticketed. It cannot be sponsored.");
+
+      String sponsorshipAmountString = textUserInterface.getInput(
+          "Enter sponsorship amount: ");
+
+      try{
+        sponsorshipAmount = Double.parseDouble(sponsorshipAmountString);
+
+      } catch (NumberFormatException e) {
+        textUserInterface.displayError("Error: invalid sponsorship amount entered. "
+            + "Please try again. ");
+        continue;
+      }
+
+      // check input is not bigger than a double can store
+      if (Double.isInfinite(sponsorshipAmount)) {
+        textUserInterface.displayError("Ticket price entered is too high");
+        continue;
+      }
+      // Need toString to avoid precision being messed up when parsed and wrapped
+      BigDecimal ticketPriceBigDecimal = new BigDecimal(Double.toString(sponsorshipAmount));
+      if (ticketPriceBigDecimal.scale() > 2){
+        textUserInterface.displayError(
+            "Ticket price cannot have more than 2 decimal places");
+        continue;
+      }
+
+      // performanceID input and sponsorshipAmount input passed basic validation if here
+      performanceToSponsor = getPerformanceByID(performanceID);
+      if (performanceToSponsor == null) {
+        textUserInterface.displayError("Performance with given number does not exist");
+        continue;
+      }
+      else {
+        possible = checkIfSponsorshipPossible(performanceToSponsor, sponsorshipAmount);
+      }
     }
 
-    
+    // once broken out of while can now apply the sponsor method
+    performanceToSponsor.sponsor(sponsorshipAmount);
+
+    // give user success message
+    textUserInterface.displaySuccess("Sponsorship Successful!");
+
   }
 
   private void addEvent(Event e) {

@@ -72,6 +72,7 @@ public class Booking {
   }
 
   public void cancelByProvider() {
+    // defensive check
     if (!(this.status == BookingStatus.ACTIVE)) {
       return;
     }

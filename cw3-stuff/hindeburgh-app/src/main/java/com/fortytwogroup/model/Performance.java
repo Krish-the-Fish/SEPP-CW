@@ -63,31 +63,35 @@ public class Performance {
   }
 
   public Collection<Integer> getReviewRatings() {
-    return reviewRatings;
+    return this.reviewRatings;
   }
 
   public Collection<String> getReviewComments() {
-    return reviewComments;
+    return this.reviewComments;
   }
 
   public String getVenueAddress() {
-    return venueAddress;
+    return this.venueAddress;
   }
 
   public LocalDateTime getStartDateTime() {
-    return startDateTime;
+    return this.startDateTime;
   }
 
   public LocalDateTime getEndDateTime() {
-    return endDateTime;
+    return this.endDateTime;
   }
 
   public long getPerformanceId() {
-    return performanceId;
+    return this.performanceId;
   }
 
   public void cancel() {
-    status = PerformanceStatus.CANCELLED;
+    setStatus(PerformanceStatus.CANCELLED);
+  }
+
+  private void setStatus(PerformanceStatus updatedStatus) {
+    this.status = updatedStatus;
   }
 
   public boolean checkIfEventIsTicketed() {
@@ -166,7 +170,12 @@ public class Performance {
   }
 
   public boolean hasActiveBookings() {
-    return (numTicketsSold > 0 && status == PerformanceStatus.ACTIVE);
+    for (Booking booking : allBookings) {
+      if (booking.getStatus() == BookingStatus.ACTIVE) {
+        return true;
+      }
+    }
+    return false;
   }
 
   public String getBookingDetailsForRefund() {
@@ -188,10 +197,22 @@ public class Performance {
 
   public void sponsor(double amount) {
     if (event.getIsTicketed()) {
-      isSponsored = true;
-      sponsoredAmount += amount;  // allow for multiple sponsorships
-      sponsorshipAmountRemaining += amount;  // allow for multiple sponsorships
+      setIsSponsored(true);
+      setSponsoredAmount(amount);  // allow for multiple sponsorships
+      setSponsoredAmountRemaining(amount);  // allow for multiple sponsorships
     }
+  }
+
+  private void setIsSponsored(Boolean updatedSponsorshipStatus) {
+    this.isSponsored = updatedSponsorshipStatus;
+  }
+
+  private void setSponsoredAmount(double sponsorshpAmount) {
+    this.sponsoredAmount += sponsorshpAmount;
+  }
+
+  private void setSponsoredAmountRemaining(double sponsorshipAmountRemaining) {
+    this.sponsorshipAmountRemaining += sponsorshipAmountRemaining;
   }
 
   public void review(int rating, String comment) {
@@ -281,5 +302,9 @@ public class Performance {
 
   public void setSponsorshipAmountRemaining(double amount) {
     this.sponsorshipAmountRemaining = amount;
+  }
+
+  public double getTicketPrice() {
+    return ticketPrice;
   }
 }
