@@ -295,7 +295,24 @@ public class BookingController extends Controller {
   }
 
   private Collection<Booking> findBookingsByEventID(long eventID) {
-    return null;
+
+    Collection<Booking> result = new ArrayList<>();
+
+    for (Performance p : performances) {
+
+      if (p.getEvent().getEventId() == eventID) {
+
+        for (Booking b : p.getBookings()) {
+
+          result.add(b);
+        }
+
+      }
+
+    }
+
+    return result;
+
   }
 
   private Booking getBookingByNumber(long bookingNumber) {
