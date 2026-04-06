@@ -24,15 +24,18 @@ public class BookingController extends Controller {
 
   // performances collection should come from MenuController
   public BookingController(
-      Collection<Performance> performances,
       TextUserInterface textUI,
       PaymentSystem paymentSystem) {
+
     this.nextBookingNumber = 1;  // first booking number should be 1
-    this.performances = performances;  //
     this.textUserInterface = textUI;
     this.paymentSystem = paymentSystem;
     this.allBookingsInSystem = new ArrayList<>();
 
+  }
+
+  public void setPerformances(Collection<Performance> performances) {
+    this.performances = performances;
   }
 
   public void bookPerformance() {
@@ -110,6 +113,14 @@ public class BookingController extends Controller {
     }
 
     // exit while
+
+    // now check if performance has already been
+    // if so, need to return error
+    if (chosenPerformance.getEndDateTime().isAfter(LocalDateTime.now())) {
+      textUserInterface.displayError("Error: Performance has already happened!");
+      return;
+    }
+
     // user input is now valid
     // now onto actually  creating the booking
 

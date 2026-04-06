@@ -190,7 +190,8 @@ public class Performance {
   public void sponsor(double amount) {
     if (event.getIsTicketed()) {
       isSponsored = true;
-      sponsoredAmount = amount;
+      sponsoredAmount += amount;  // allow for multiple sponsorships
+      sponsorshipAmountRemaining += amount;  // allow for multiple sponsorships
     }
   }
 

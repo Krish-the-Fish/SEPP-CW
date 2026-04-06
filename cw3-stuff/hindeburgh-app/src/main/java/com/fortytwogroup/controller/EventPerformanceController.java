@@ -30,15 +30,22 @@ public class EventPerformanceController extends Controller {
 
   public EventPerformanceController(
       TextUserInterface textUserInterface,
-      Collection<Performance> performances,
       MockPaymentSystem mockPaymentSystem) {
+
       this.textUserInterface = textUserInterface;
       this.nextEventID = 1;
       this.nextPerformanceID = 1;
-      this.performances = performances;   // ref to collection shared with booking controller
       this.mockPaymentSystem = mockPaymentSystem;
 
   }
+
+
+  // setter to give ref to collection of all performances in system
+  public void setPerformances(Collection<Performance> performances) {
+    // reference to collection shared with booking controller
+    this.performances = performances;
+  }
+
 
 
   public void createEvent() {
