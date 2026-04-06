@@ -242,7 +242,7 @@ public class BookingController extends Controller {
     }
 
     LocalDateTime startDate = cancelledBooking.getPerformance().getStartDateTime(); // Checking 24 hours
-    if (!((LocalDateTime.now()).isAfter(startDate.minusHours(24)))){
+    if (LocalDateTime.now().isAfter(startDate.minusHours(24))) {
       textUserInterface.displayError("You cannot cancel a booking that's less than 24 hours away.");
       return;
     }
