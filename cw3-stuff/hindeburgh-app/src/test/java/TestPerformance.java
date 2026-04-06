@@ -1,6 +1,7 @@
 import com.fortytwogroup.model.Booking;
 import com.fortytwogroup.model.Event;
 import com.fortytwogroup.model.Performance;
+import com.fortytwogroup.model.enums.BookingStatus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.MockedStatic;
@@ -102,12 +103,24 @@ public class TestPerformance {
 
         Booking booking = mock(Booking.class);
 
-        performance.addBooking(booking);
         when(booking.getNumTickets()).thenReturn(300);
+        performance.addBooking(booking);
 
         double finalTicketPrice = performance.getFinalTicketPrice();
 
-        assertEquals(0, finalTicketPrice, "Final ticket price should be 5");
+        assertEquals(0, finalTicketPrice, "Discount should result in ticket price of 0");
+    }
+
+    @Test
+    void getFinalTicketPrice_allSold() {
+        Booking booking = mock(Booking.class);
+
+        when(booking.getNumTickets()).thenReturn(600);
+        performance.addBooking(booking);
+
+        double finalTicketPrice = performance.getFinalTicketPrice();
+
+        assertEquals(0, finalTicketPrice, "If all tickets sold, final ticket price should be 0");
     }
 
     @Test
@@ -160,8 +173,8 @@ public class TestPerformance {
     void hasActiveBookings_returnTrue() {
         Booking booking = mock(Booking.class);
 
-        performance.addBooking(booking);
         when(booking.getNumTickets()).thenReturn(1);
+        performance.addBooking(booking);
 
         boolean result = performance.hasActiveBookings();
 
@@ -183,5 +196,117 @@ public class TestPerformance {
         assertFalse(result, "If there have been no bookings, it should return false");
     }
 
+    @Test
+    void getBookingDetailsForRefund_validActiveBooking() {
+        Booking booking = mock(Booking.class);
 
+        when(booking.getStatus()).thenReturn(BookingStatus.ACTIVE);
+        when(booking.getStudentDetails()).thenReturn("mock student details");
+        when(booking.getAmountPaid()).thenReturn(0.0);
+        when(booking.getNumTickets()).thenReturn(0);
+        performance.addBooking(booking);
+
+        String result = performance.getBookingDetailsForRefund();
+
+        assertEquals(
+                "Student details: mock student details\nAmount paid: 0.0\nNumber of tickets purchased: 0\n---\n",
+                result);
+    }
+
+    @Test
+    void getBookingDetailsForRefund_noBookings() {
+        String result = performance.getBookingDetailsForRefund();
+
+        assertEquals("", result);
+    }
+
+    @Test
+    void getBookingDetailsForRefund_inactiveBooking() {
+        Booking booking = mock(Booking.class);
+
+        when(booking.getStatus()).thenReturn(BookingStatus.CANCELLED_BY_STUDENT);
+        when(booking.getStudentDetails()).thenReturn("mock student details");
+        when(booking.getAmountPaid()).thenReturn(0.0);
+        when(booking.getNumTickets()).thenReturn(0);
+        performance.addBooking(booking);
+
+        String result = performance.getBookingDetailsForRefund();
+
+        assertEquals("", result);
+    }
+
+    @Test
+    void sponsor() {
+
+    }
+
+    @Test
+    void review_validReview() {
+        LocalDateTime testDateTime = LocalDateTime.of(2026, 1, 2, 14, 0);
+
+        try (MockedStatic<LocalDateTime> mockedTime = Mockito.mockStatic(LocalDateTime.class)) {
+
+            mockedTime.when(LocalDateTime::now).thenReturn(testDateTime);
+
+            performance.review(3, "valid review");
+
+            assertTrue(performance.getReviewRatings().contains(3));
+            assertTrue(performance.getReviewComments().contains("valid review"));
+        }
+    }
+
+    @Test
+    void review_performanceAlreadyHappened() {
+        LocalDateTime testDateTime = LocalDateTime.of(2026, 4, 2, 14, 0);
+
+        try (MockedStatic<LocalDateTime> mockedTime = Mockito.mockStatic(LocalDateTime.class)) {
+
+            mockedTime.when(LocalDateTime::now).thenReturn(testDateTime);
+
+            performance.review(3, "valid review");
+
+            assertFalse(performance.getReviewRatings().contains(3));
+            assertFalse(performance.getReviewComments().contains("valid review"));
+        }
+    }
+
+    @Test
+    void review_invalidRating() {
+        LocalDateTime testDateTime = LocalDateTime.of(2026, 1, 2, 14, 0);
+
+        try (MockedStatic<LocalDateTime> mockedTime = Mockito.mockStatic(LocalDateTime.class)) {
+
+            mockedTime.when(LocalDateTime::now).thenReturn(testDateTime);
+
+            performance.review(99, "valid review");
+
+            assertFalse(performance.getReviewRatings().contains(3));
+            assertFalse(performance.getReviewComments().contains("valid review"));
+        }
+    }
+
+    @Test
+    void review_invalidComment() {
+        LocalDateTime testDateTime = LocalDateTime.of(2026, 1, 2, 14, 0);
+
+        try (MockedStatic<LocalDateTime> mockedTime = Mockito.mockStatic(LocalDateTime.class)) {
+
+            mockedTime.when(LocalDateTime::now).thenReturn(testDateTime);
+
+            performance.review(3, "");
+
+            assertTrue(performance.getReviewRatings().contains(3));
+            assertFalse(performance.getReviewComments().contains("valid review"));
+        }
+    }
+
+    @Test
+    void addBooking_test() {
+        Booking booking = mock(Booking.class);
+        when(booking.getNumTickets()).thenReturn(1);
+
+        performance.addBooking(booking);
+
+        assertTrue(performance.getAllBookings().contains(booking));
+    }
 }

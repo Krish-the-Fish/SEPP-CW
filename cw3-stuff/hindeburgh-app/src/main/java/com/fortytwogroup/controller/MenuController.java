@@ -3,8 +3,10 @@ package com.fortytwogroup.controller;
 import com.fortytwogroup.model.User;
 import com.fortytwogroup.view.TextUserInterface;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class MenuController extends Controller {
 
@@ -52,6 +54,7 @@ public class MenuController extends Controller {
     this.eventPerformanceController = eventPerformanceController;
     this.bookingController = bookingController;
     this.textUserInterface = textUserInterface;
+    setTextUserInterface(textUserInterface);
   }
 
   public void mainMenu() {
@@ -76,9 +79,11 @@ public class MenuController extends Controller {
   }
 
   private boolean handleGuestMainMenu(){
-    String userInput = textUserInterface.getInput("Enter input: ");
 
-    int choice = selectFromMenu(Arrays.stream(GuestMenuOptions.values()).toList(), userInput);
+    int choice = selectFromMenu(
+            Arrays.stream(GuestMenuOptions.values()).toList(),
+            "Welcome to the app, choose which option you would like to select: "
+    );
 
     return switch (choice) {
       case 0 -> {
@@ -94,9 +99,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleStudentMainMenu(){
-    String userInput = textUserInterface.getInput("Enter input: ");
-
-    int choice = selectFromMenu(Arrays.stream(StudentMenuOptions.values()).toList(), userInput);
+    int choice = selectFromMenu(
+            Arrays.stream(StudentMenuOptions.values()).toList(),
+            "Welcome student, select from the below options: "
+    );
 
     return switch (choice) {
       case 0 -> {
@@ -132,9 +138,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleEntertainmentProviderMainMenu(){
-    String userInput = textUserInterface.getInput("Enter input: ");
-
-    int choice = selectFromMenu(Arrays.stream(EPMenuOptions.values()).toList(), userInput);
+    int choice = selectFromMenu(
+            Arrays.stream(EPMenuOptions.values()).toList(),
+            "Welcome admin, select from the below options: "
+    );
 
     return switch (choice) {
       case 0 -> {
@@ -162,9 +169,10 @@ public class MenuController extends Controller {
   }
 
   private boolean handleAdminStaffMainMenu(){
-    String userInput = textUserInterface.getInput("Enter input: ");
-
-    int choice = selectFromMenu(Arrays.stream(AdminMenuOptions.values()).toList(), userInput);
+    int choice = selectFromMenu(
+            Arrays.stream(AdminMenuOptions.values()).toList(),
+            "Welcome ep, select from the below options: "
+    );
 
     return switch (choice) {
       case 0 -> {
