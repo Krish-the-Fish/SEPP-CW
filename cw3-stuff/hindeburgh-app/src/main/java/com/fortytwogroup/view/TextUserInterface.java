@@ -3,6 +3,9 @@ package com.fortytwogroup.view;
 import java.util.Collection;
 import java.util.Scanner;
 
+/**
+ * Class for abstracting the end user I/O from the internal workings of the system.
+ */
 public class TextUserInterface implements View {
   private final Scanner scanner;
 

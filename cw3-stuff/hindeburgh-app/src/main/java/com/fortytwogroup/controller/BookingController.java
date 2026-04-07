@@ -10,6 +10,11 @@ import com.fortytwogroup.model.Performance;
 import com.fortytwogroup.model.Student;
 import com.fortytwogroup.view.TextUserInterface;
 
+/**
+ * Subclass of the abstract Controller class. Handles the majority of operations concerning
+ * students booking tickets for performances and cancelling their booking, as well as allowing
+ * entertainment provider's to also cancel performances and hence student bookings.
+ */
 public class BookingController extends Controller {
   private long nextBookingNumber;
 
@@ -23,6 +28,13 @@ public class BookingController extends Controller {
   private final PaymentSystem paymentSystem;
 
   // performances collection should come from MenuController
+
+  /**
+   * Constructor for booking controller, utilizing dependency injection to abstract the process
+   * of getting user input
+   * @param textUI reference to an instance of TextUserInterface to get user input
+   * @param paymentSystem reference to an instance of MockPayment system to handle all payments
+   */
   public BookingController(
       TextUserInterface textUI,
       PaymentSystem paymentSystem) {
@@ -38,6 +50,11 @@ public class BookingController extends Controller {
     this.performances = performances;
   }
 
+  /**
+   * Method enabling students to book tickets for a given ticketed performance. If the requested
+   * performance is non-ticketed the student end user is notified that they do not
+   * need to book tickets for that performance.
+   */
   public void bookPerformance() {
 
     //checks if user is a student
@@ -201,8 +218,9 @@ public class BookingController extends Controller {
   }
 
 
-
-
+  /**
+   * Method allowing students to add reviews to performances that they went to.
+   */
   public void reviewPerformance() {
     if (!(checkCurrentUserIsStudent())){
       textUserInterface.displayError("Students are the only permitted users to post reviews."); 
@@ -245,6 +263,9 @@ public class BookingController extends Controller {
 
   }
 
+  /**
+   * Method allowing entertainment providers and students to cancel their own bookings
+   */
   public void cancelBooking() {
     if (!(checkCurrentUserIsStudent() || checkCurrentUserIsEntertainmentProvider())){
       textUserInterface.displayError("Only students and entertainment providers can cancel bookings");
@@ -297,10 +318,22 @@ public class BookingController extends Controller {
 
   }
 
+  /**
+   * Method to add a new booking object to the system
+   * @param b the new booking object being added to the system
+   */
   private void addBooking(Booking b) {
     allBookingsInSystem.add(b);
   }
 
+  /**
+   * Retrieves the performance object in the system for a given performanceID.
+   * If the performanceID is not on the system, return null instead
+   * @param performanceID query numeric ID value that the method checks if it has a corresponding
+   *                      Performance object on the system.
+   * @return Performance object that has the same performance ID as the query performance ID,
+   * if no match in system, return null instead.
+   */
   private Performance getPerformanceByID(long performanceID) {
     // check if the input performance ID matches any on the system
     for(Performance performance : this.performances) {
@@ -313,6 +346,13 @@ public class BookingController extends Controller {
     return null;
   }
 
+  /**
+   * Checks if booking is able to be made for a given performance. Outcome is dependent on the
+   * number of tickets the student wants to book and whether or not the event is ticketed.
+   * @param performance the performance that the student wishes to book
+   * @param numTickets the number of tickets the student wishes to book for that performance
+   * @return true if the booking is possible, otherwise return false
+   */
   private boolean checkIfBookingPossible(Performance performance, int numTickets) {
     boolean isTicketed = performance.checkIfEventIsTicketed();
 
@@ -333,6 +373,12 @@ public class BookingController extends Controller {
     return true;
   }
 
+  /**
+   * Requests the corpus of all bookings that exist for a given event, given the event's ID
+   * @param eventID unique integer for identifying the event of choice
+   * @return collection of all bookings for that event that exist on the system, regarless of the
+   * status of the bookings.
+   */
   private Collection<Booking> findBookingsByEventID(long eventID) {
 
     Collection<Booking> result = new ArrayList<>();

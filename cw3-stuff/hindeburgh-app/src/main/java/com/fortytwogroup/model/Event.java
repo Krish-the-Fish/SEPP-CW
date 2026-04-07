@@ -6,6 +6,9 @@ import java.util.Collection;
 
 import com.fortytwogroup.model.enums.EventType;
 
+/**
+ * Class used to create objects containing the key details of a given event on the app.
+ */
 public class Event {
   private long eventId;
   private String title;
@@ -35,6 +38,7 @@ public class Event {
 
 
 
+  // Contains call to the Performance constructor
   public Performance createPerformance(long performanceId, LocalDateTime startDateTime, LocalDateTime endDateTime,
       Collection<String> performerNames, String venueAddress, int venueCapacity, boolean venueIsOutdoors,
       boolean venueAllowsSmoking, int numTicketsTotal, double ticketPrice, Event event) {
@@ -81,6 +85,12 @@ public class Event {
     return entertainmentProvider.getEmail();  //  calling getter within EP parent class
   }
 
+  /**
+   * Aggregates all the ratings published by students for a given performance they were at
+   * in order to calculate and set the performance's average review score on a scale of 1 to 5
+   * on the app.
+   * @return average of all the ratings provided by students for a given performance
+   */
   public double getAverageRatingOfPerformances() {
     int sumOfRatings = 0;
     for (Performance p : performances) { // Get average rating per performance
@@ -117,6 +127,8 @@ public class Event {
   }
 
   /**
+   * Produces a string literal containing all the details of an event object, including
+   * variable names and the values they take on.
    * Method deliberately omits the reference to the entertainment provider object
    * @return String containing key fields within an Event instance
    */

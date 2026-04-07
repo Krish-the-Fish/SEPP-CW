@@ -3,6 +3,10 @@ package com.fortytwogroup.model;
 import java.util.Collection;
 import java.util.ArrayList;
 
+/**
+ * Represents the accounts of the students on the app, allowing them to book tickets for
+ * performances, etc.
+ */
 public class Student extends User {
   private String name;
   private int phoneNumber;

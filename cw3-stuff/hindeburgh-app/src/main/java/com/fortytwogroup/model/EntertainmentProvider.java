@@ -3,6 +3,10 @@ package com.fortytwogroup.model;
 import java.util.Collection;
 import java.util.ArrayList;
 
+/**
+ * Class representing Entertainment Providers who can register on the app in order to promote
+ * their events to students
+ */
 public class EntertainmentProvider extends User {
   private String orgName;
   private String businessNumber;

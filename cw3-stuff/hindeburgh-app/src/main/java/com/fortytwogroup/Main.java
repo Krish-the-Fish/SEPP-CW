@@ -10,7 +10,9 @@ import com.fortytwogroup.external.MockVerificationService;
 import com.fortytwogroup.view.TextUserInterface;
 
 
-
+/**
+ * Contains the main method for a single user on the app.
+ */
 public class Main { // Program starts here.
   public static void main(String[] args) {
 

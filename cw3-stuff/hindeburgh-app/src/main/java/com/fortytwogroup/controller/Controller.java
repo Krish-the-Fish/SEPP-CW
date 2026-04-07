@@ -10,9 +10,18 @@ import com.fortytwogroup.view.TextUserInterface;
 import java.util.ArrayList;
 import java.util.Collection;
 
+/**
+ * Abstract class for defining common methods among the controller classes in the system.
+ * Also contains a reference to the active user on the thread.
+ * Class is not meant to be instantiated and is hence abstract.
+ */
 public abstract class Controller {
   private TextUserInterface textUserInterface;
 
+  /**
+   * Allows dependency injection, simplifying code in main method
+   * @param textUserInterface reference to the ui object that abstracts user I/O
+   */
   protected void setTextUserInterface(TextUserInterface textUserInterface) {
     this.textUserInterface = textUserInterface;
   }
@@ -43,8 +52,19 @@ public abstract class Controller {
     return currentUser instanceof EntertainmentProvider;
   }
 
-  /* no name provided in spec for String parameter,
-    therefore using item as suitable placeholder
+  /*
+  no name provided in spec for String parameter,
+   therefore using item as suitable placeholder for String message in selectFromMenu method
+   */
+
+  /**
+   * Prompts the user to select form a list of options, allowing for initiation of use-cases
+   * @param collection collection of all options on the menu screen given to the user
+   * @param message prompt given to user to tell them to select an option from the menu
+   * @return the number representing the option the user chose from the menu. In case of error,
+   * return -1 as sentinel value
+   * @param <T> generic allowing for menu options to be of any type, provided the types of the
+   *          options are consistent with each other.
    */
   protected <T> int selectFromMenu(Collection<T> collection, String message) {
     ArrayList<String> options = optionStrings(collection);
@@ -53,7 +73,7 @@ public abstract class Controller {
     String input = textUserInterface.getInput("Command: ");
     int counter = 0;
     for (T item : collection) {
-      if (input.toUpperCase().equals(item.toString())) {
+      if (input.equalsIgnoreCase(item.toString())) {
         return counter;
       }
       counter++;
@@ -61,6 +81,12 @@ public abstract class Controller {
     return -1;
   }
 
+  /**
+   * Converts a collection of items into a list of their string representations.
+   * * @param collection The collection of items to convert.
+   * @return An ArrayList containing the string representation of each item in the collection.
+   * @param <T> The type of the elements in the collection.
+   */
   private <T> ArrayList<String> optionStrings(Collection<T> collection) {
     ArrayList<String> options = new ArrayList<>();
     for (T item : collection) {

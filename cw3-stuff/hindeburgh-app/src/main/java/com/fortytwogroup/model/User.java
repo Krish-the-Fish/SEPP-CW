@@ -1,5 +1,10 @@
 package com.fortytwogroup.model;
 
+/**
+ * Abstract class not meant to be instantiated.
+ * Purely to allow the 3 user types: AdminStaff, Student, EntertainmentProvider, to inherit
+ * common attributes and functionality.
+ */
 public abstract class User {
   private String email;
   private String password;

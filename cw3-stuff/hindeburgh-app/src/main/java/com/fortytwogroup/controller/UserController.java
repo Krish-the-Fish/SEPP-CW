@@ -8,6 +8,10 @@ import com.fortytwogroup.view.TextUserInterface;
 import java.io.File;
 import java.util.*;
 
+/**
+ * Class controlling basic user functionality, allowing users to login, logout and edit specific
+ * details about their account such as their preferences.
+ */
 public class UserController extends Controller {
   // for later testing, to instantiate the user classes so that we can log in
   private final String REGISTERED_ADMINS_FILE = "src/main/resources/pre-registered-admins.csv";
@@ -33,6 +37,10 @@ public class UserController extends Controller {
     return users;
   }
 
+  /**
+   * Allows users to log in to their account on the system.
+   * Handles input validation, allowing users to re-enter details on a failed log in attempt
+   */
   public void login() {
     boolean validLogin = false;
     while (!validLogin) {
@@ -69,6 +77,10 @@ public class UserController extends Controller {
     }
   }
 
+  /**
+   * Allows users to log out of the system.
+   * Represents this by setting the state of the current user on the thread to null
+   */
   public void logout() {
     setCurrentUser(null);
     textUserInterface.displaySuccess("Successfully logged out!");
@@ -152,6 +164,11 @@ public class UserController extends Controller {
     return found || inHashMap;
   }
 
+  /**
+   * Allows students to edit their preferences by allowing them to say if they're interested
+   * in particular types of events.
+   * Preferences affect the rankings of search results when student's search for performances
+   */
   public void editPreferences() {
     List<String> eventTypes = getEventTypes();
     String preferences = "";
@@ -199,11 +216,19 @@ public class UserController extends Controller {
     return eventTypes;
   }
 
+  /**
+   * Adds a new user to the system once they've registered for an account
+   * @param user the object representing the new user just added to the system
+   */
   private void addUser(User user) {
     String email = user.getEmail();
     users.put(email, user);
   }
 
+
+  /**
+   * Instantiates a list of user objects representing all of pre-registered defined by Acme Corp
+   */
   private void addPreregisteredUsers() {
     File userFile = new File(REGISTERED_USERS_FILE);
     File adminFile = new File(REGISTERED_ADMINS_FILE);

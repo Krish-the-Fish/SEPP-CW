@@ -4,6 +4,10 @@ import java.time.LocalDateTime;
 
 import com.fortytwogroup.model.enums.BookingStatus;
 
+/**
+ * Class for creating objects to store details of bookings that students have made for
+ * performances/events
+ */
 public class Booking {
   private long bookingNumber;
   private int numTickets;
@@ -63,9 +67,7 @@ public class Booking {
     return status;
   }
 
-  /**
-   * Method should only be called by BookingController
-   */
+  // Method should only be called by BookingController
   public void cancelPaymentFailed() {
     // defensive check
     if (!(this.status == BookingStatus.ACTIVE)) {
@@ -101,6 +103,12 @@ public class Booking {
     );
   }
 
+  /**
+   * Generates a String containing the details of a given booking, allowing the users to see the
+   * details of their new booking
+   * @return String literal containing all the details of a given Booking object and the
+   * performance it's for
+   */
   public String generateBookingRecord() {
     String bookingRecord = "";
     bookingRecord += "Student name: " + student.getName()+"\n";

@@ -7,6 +7,11 @@ import java.util.Collection;
 import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.model.enums.PerformanceStatus;
 
+/**
+ * Class that's instances store key details of performances on the app that were created by
+ * Entertainment providers.
+ * Key details include what event the performance is a part of and when it is.
+ */
 public class Performance {
   private long performanceId;
   private LocalDateTime startDateTime;
@@ -118,8 +123,11 @@ public class Performance {
 
   /**
    * Method assumes that there are still tickets remaining. Gets final ticket price of a single
-   * ticket at time of buying
-   * @return amount
+   * ticket at time of buying.
+   * Does this by evenly distributing the sponsorship amount remaining for the event among the
+   * remaining tickets for the event.
+   * @return 0 as sentinel value if no tickets left, otherwise return result of original
+   * ticket price after cost reduction due to University sponsorship of the performance.
    */
   public double getFinalTicketPrice() {
     // will evenly distribute the sponsorship amount among the remaining tickets
@@ -198,6 +206,12 @@ public class Performance {
     return bookingDetailsForRefund;
   }
 
+  /**
+   * Increments the values of the variables tracking sponsorship amount
+   * for a given performance when that performance is sponsored.
+   * Also sets state of performance to sponsored if not already in that state.
+   * @param amount the value of the sponsorship, in the local currency (e.g. £ or $)
+   */
   public void sponsor(double amount) {
     if (event.getIsTicketed()) {
       setIsSponsored(true);

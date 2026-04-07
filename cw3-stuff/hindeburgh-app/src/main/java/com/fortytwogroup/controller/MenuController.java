@@ -7,6 +7,9 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 
+/**
+ * Controller handling which menu options different types of users see.
+ */
 public class MenuController extends Controller {
 
   // declaring enums
@@ -68,6 +71,10 @@ public class MenuController extends Controller {
     return performances;
   }
 
+  /**
+   * Calls the view to show the main menu for the user's account type to the user, as to prompt
+   * them for input.
+   */
   public void mainMenu() {
     boolean validCommand = false;
 
@@ -92,6 +99,11 @@ public class MenuController extends Controller {
     }
   }
 
+  /**
+   * Menu given to users to don't have an account on the system.
+   * Should allow them to register an account on the app
+   * @return boolean representing the users option choice.
+   */
   private boolean handleGuestMainMenu(){
 
     int choice = selectFromMenu(
@@ -112,6 +124,12 @@ public class MenuController extends Controller {
     };
   }
 
+  /**
+   * Menu given to Students who are logged in.
+   * Should show them their high level options, such as searching for performances or booking
+   * tickets for them
+   * @return boolean representing the student's option choice.
+   */
   private boolean handleStudentMainMenu(){
     int choice = selectFromMenu(
             Arrays.stream(StudentMenuOptions.values()).toList(),
@@ -151,6 +169,11 @@ public class MenuController extends Controller {
     };
   }
 
+  /**
+   * Menu given to Entertainment Providers who are logged in.
+   * Should show them their high level options, such as create event.
+   * @return boolean representing the Entertainment Provider's option choice.
+   */
   private boolean handleEntertainmentProviderMainMenu(){
     int choice = selectFromMenu(
             Arrays.stream(EPMenuOptions.values()).toList(),
@@ -182,6 +205,13 @@ public class MenuController extends Controller {
     };
   }
 
+
+  /**
+   * Menu given to University app administrators who are logged in.
+   * Should show them their high level options, such as sponsoring performances to subsidize their
+   * ticket costs.
+   * @return boolean representing the users option choice.
+   */
   private boolean handleAdminStaffMainMenu(){
     int choice = selectFromMenu(
             Arrays.stream(AdminMenuOptions.values()).toList(),

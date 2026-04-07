@@ -20,6 +20,10 @@ import java.util.Collection;
 import java.util.List;
 
 
+/**
+ * Controller class providing functionality for all cases concerning creating performances,
+ * searching for performances and cancelling performances
+ */
 public class EventPerformanceController extends Controller {
   private long nextEventID;
   private long nextPerformanceID;
@@ -30,6 +34,11 @@ public class EventPerformanceController extends Controller {
   private TextUserInterface textUserInterface;
 
 
+  /**
+   * Constructor utilizes dependency injection make logic in main simpler
+   * @param textUserInterface reference to the UI class, used to abstract user I/O
+   * @param mockPaymentSystem reference to the payment system to abstract transfer of payment
+   */
   public EventPerformanceController(
       TextUserInterface textUserInterface,
       MockPaymentSystem mockPaymentSystem) {
@@ -52,6 +61,10 @@ public class EventPerformanceController extends Controller {
     return this.performances;
   }
 
+  /**
+   * Allows only Entertainment providers to create events on the app, and give details of the
+   * performances they involve, in order to advertise to students.
+   */
   public void createEvent() {
     boolean userIsEP = super.checkCurrentUserIsEntertainmentProvider();
 
@@ -249,14 +262,13 @@ public class EventPerformanceController extends Controller {
   }
 
   /**
-     * The student can search for performances that are happening on a specific date.
-     * They type the day in the YYYY-MM-DD format.
-     * The system knows the day a specific Performance object has by getting the 
-     * substring of the toString()'ed performance object at the appropriate section.
-     * dateString is the date of the performances that the student wishes to search for.
-     * 
-     * @return                  Group of performances, that have a performance on that date and fit the student preferences, are printed line by line.
-     */
+   * The student can search for performances that are happening on a specific date.
+   * They type the day in the YYYY-MM-DD format.
+   * The system knows the day a specific Performance object has by getting the
+   * substring of the toString()'ed performance object at the appropriate section.
+   * dateString is the date of the performances that the student wishes to search for.
+   * Result is a list of performances for a given date interval are shown on the user's screen
+   */
   public void searchForPerformances() {
     String dateString = textUserInterface.getInput("Enter start date to search for as YYYY-MM-DD: ");
 
@@ -308,6 +320,9 @@ public class EventPerformanceController extends Controller {
         textUserInterface.displaySpecificPerformance(performances);
   }
 
+  /**
+   * Allows users to view performances on the app by querying their performance ID
+   */
   public void viewPerformance() {
 
     String performanceIdString = textUserInterface.getInput("Enter performance ID: ");
@@ -463,6 +478,17 @@ public class EventPerformanceController extends Controller {
 
   }
 
+
+  /**
+   * Validates whether a sponsorship amount can be applied to a specific performance.
+   *
+   * This method ensures the performance is part of a ticketed event and that
+   * the sponsorship amount is a positive value not exceeding the current ticket price.
+   * @param performance The specific performance instance being evaluated for sponsorship.
+   * @param amount The monetary value proposed to subsidize each ticket.
+   * @return true if the performance is ticketed and the amount is within valid bounds;
+   * false otherwise.
+   */
   private boolean checkIfSponsorshipPossible(Performance performance, double amount) {
     boolean isTicketed = performance.checkIfEventIsTicketed();
 
@@ -485,6 +511,10 @@ public class EventPerformanceController extends Controller {
     return true;
   }
 
+  /**
+   * Allows AdminStaff Users to donate University funds to subsidize the cost of the remaining
+   * tickets for a given performance.
+   */
   public void sponsorPerformance() {
 
     // defensive check, only admins can sponsor a performance
@@ -596,6 +626,11 @@ public class EventPerformanceController extends Controller {
     return null;
   }
 
+  /**
+   * Helper function to improve readability of create event method.
+   * Handles the gathering of the key information for a given performance that an
+   * Entertainment Provider wants to create
+   */
   private Performance getPerformanceDetailsFromEP(Event event) {
     // get and unpack date/time values
     List<LocalDateTime> startEndDate = getPerformanceDateTimeDetailsFromEP();
@@ -673,6 +708,10 @@ public class EventPerformanceController extends Controller {
     return newPerformance;
   }
 
+  /**
+   * Helper function to improve the readability of the getPerformanceDetails helper
+   * @return list containing 2 LocalDateTime objects to be unpacked in getPerformanceDetails
+   */
   private List<LocalDateTime> getPerformanceDateTimeDetailsFromEP(){
     // loop until giving correct details gives exit
     while (true) {
@@ -697,6 +736,12 @@ public class EventPerformanceController extends Controller {
 
   }
 
+
+  /**
+   * Helper to reduce duplication of code when parsing input Strings as LocalDate objects
+   * @param startOrEnd start date or end date of a given performance as type String literal
+   * @return the input string literal parsed and stored as a LocalDate object
+   */
   private LocalDate createDateObject(String startOrEnd) {
     boolean validDate = false;
     String performanceDateRawString = "";
@@ -710,6 +755,11 @@ public class EventPerformanceController extends Controller {
     return LocalDate.parse(performanceDateRawString);
   }
 
+  /**
+   * Helper for handling the parsing of String literals as LocalTime objects
+   * @param startOrEnd start or end time of a given performance
+   * @return input String literal as type LocalTime
+   */
   private LocalTime createTimeObject(String startOrEnd) {
     boolean validTime = false;
     String performanceTimeRawString = "";
@@ -724,6 +774,11 @@ public class EventPerformanceController extends Controller {
   }
 
 
+  /**
+   * Helper for improving readability of getPerformanceDetailsFromEP method
+   * Handles the input validation and parsing to type boolean of the EP input
+   * @return true is the EP says the performance is ticketed, otherwise return false
+   */
   private boolean getPerformanceTicketedStatusFromEP() {
     Boolean performanceTicketedStatus = null;
     while (performanceTicketedStatus == null) {
@@ -745,6 +800,12 @@ public class EventPerformanceController extends Controller {
     return performanceTicketedStatus;
   }
 
+  /**
+   * Helper for improving readability of getPerformanceDetailsFromEP method.
+   * Handles the input validation and parsing to type integer of the EP input
+   * @return integer representing the number of tickets a ticketed performance will have,
+   * given by the Entertainment Provider
+   */
   private int getNumTicketsAvailableFromEP() {
     Integer numTicketsAvailable = null;
     while(numTicketsAvailable == null) {
@@ -772,7 +833,12 @@ public class EventPerformanceController extends Controller {
   }
 
 
-
+  /**
+   * Helper for improving readability of getPerformanceDetailsFromEP method.
+   * Handles the input validation and parsing to type double of the ticketPrice EP input
+   * @return price of a ticket for a given performance, as provided by the Entertainment
+   * Provider running that performance.
+   */
   private double getTicketPriceFromEP() {
 
     while(true) {
@@ -811,6 +877,12 @@ public class EventPerformanceController extends Controller {
   }
 
 
+  /**
+   * Helper for improving readability of getPerformanceDetailsFromEP method.
+   * Handles the input validation and parsing of the list of performer names
+   * to type collection of string, when input by the Entertainment Provider
+   * @return
+   */
   private Collection<String> getPerformerNamesFromEP(){
 
     Collection<String> performerNames = new ArrayList<String>();
@@ -846,6 +918,14 @@ public class EventPerformanceController extends Controller {
   }
 
   // remember to convert to required types when unpacking string collection
+
+  /**
+   * Helper for improving readability of getPerformanceDetailsFromEP method.
+   * Handles the input validation and parsing of the venue details.
+   * Packages the arraylist for easy passing of multiple values to caller
+   * @return arraylist of strings representing the input venue details from the Entertainment
+   * Provider when prompted.
+   */
   private ArrayList<String> getVenueDetailsFromEP(){
     textUserInterface.getInput("Enter the venue's details for the performances.");
 
