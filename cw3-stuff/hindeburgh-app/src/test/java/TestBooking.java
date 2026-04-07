@@ -94,18 +94,6 @@ public class TestBooking {
     }
 
     @Test
-    void checkBookedByStudent() {
-        Student student = mock(Student.class);
-        when(student.getEmail()).thenReturn("student@school.com");
-        when(student.getPhoneNumber()).thenReturn(123456789);
-        Performance performance = mock(Performance.class);
-        Booking booking = new Booking(1, 2, 20.0, student, performance);
-
-        assertTrue(booking.checkBookedByStudent("student@school.com"));
-        assertFalse(booking.checkBookedByStudent("other@school.com"));
-    }
-
-    @Test
     void getStudentDetails() {
         Student student = mock(Student.class);
         when(student.getEmail()).thenReturn("student@school.com");
@@ -142,5 +130,24 @@ public class TestBooking {
             "EventData\n";
 
         assertEquals(expected, booking.generateBookingRecord());
+
+    }
+
+    @Test
+    void checkBookedByStudent_true() {
+        when(mockStudent.getEmail()).thenReturn("email@email.com");
+        when(mockStudent.getPhoneNumber()).thenReturn(98527355);
+        boolean result = booking.checkBookedByStudent("email@email.com");
+
+        assertTrue(result, "Booking should be booked by the given student");
+    }
+
+    @Test
+    void checkBookedByStudent_false() {
+        when(mockStudent.getEmail()).thenReturn("differentstudent@email.com");
+        when(mockStudent.getPhoneNumber()).thenReturn(98527355);
+        boolean result = booking.checkBookedByStudent("email@email.com");
+
+        assertFalse(result, "Booking should not have been booked by the given student");
     }
 }
