@@ -89,6 +89,22 @@ public class TestPerformance {
     }
 
     @Test
+    void getOrganiserEmail_test() {
+        when(mockEvent.getOrganiserEmail()).thenReturn("test@test.com");
+        String result = performance.getOrganiserEmail();
+
+        assertEquals("test@test.com", result);
+    }
+
+    @Test
+    void getEventTitle_test() {
+        when(mockEvent.getEventTitle()).thenReturn("Event Title");
+        String result = performance.getEventTitle();
+
+        assertEquals("Event Title", result);
+    }
+
+    @Test
     void getFinalTicketPrice_zeroSold() {
         performance.setSponsorshipAmountRemaining(3000);
 
@@ -233,11 +249,6 @@ public class TestPerformance {
         String result = performance.getBookingDetailsForRefund();
 
         assertEquals("", result);
-    }
-
-    @Test
-    void sponsor() {
-
     }
 
     @Test

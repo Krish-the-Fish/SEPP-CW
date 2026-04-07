@@ -17,7 +17,7 @@ public abstract class Controller {
     this.textUserInterface = textUserInterface;
   }
 
-  private User currentUser = null;
+  private static User currentUser = null;
 
   public void setCurrentUser(User currentUser) {
     this.currentUser = currentUser;
@@ -28,9 +28,7 @@ public abstract class Controller {
   }
 
   protected boolean checkCurrentUserIsGuest() {
-    return !checkCurrentUserIsAdmin()
-            && !checkCurrentUserIsStudent()
-            && !checkCurrentUserIsEntertainmentProvider();
+    return currentUser == null;
   }
 
   protected boolean checkCurrentUserIsAdmin() {
@@ -52,7 +50,7 @@ public abstract class Controller {
     ArrayList<String> options = optionStrings(collection);
     System.out.println(message);
     System.out.println(String.join(", ", options));
-    String input = textUserInterface.getInput("");
+    String input = textUserInterface.getInput("Command: ");
     int counter = 0;
     for (T item : collection) {
       if (input.toUpperCase().equals(item.toString())) {
