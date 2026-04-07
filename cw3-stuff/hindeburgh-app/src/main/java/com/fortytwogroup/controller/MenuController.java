@@ -1,14 +1,11 @@
 package com.fortytwogroup.controller;
 
 import com.fortytwogroup.model.Performance;
-import com.fortytwogroup.model.Student;
-import com.fortytwogroup.model.User;
 import com.fortytwogroup.view.TextUserInterface;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.List;
 
 public class MenuController extends Controller {
 

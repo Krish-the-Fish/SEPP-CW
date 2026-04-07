@@ -1,6 +1,5 @@
 package com.fortytwogroup.systemtests;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.when;
@@ -10,11 +9,11 @@ import com.fortytwogroup.controller.EventPerformanceController;
 import com.fortytwogroup.controller.UserController;
 import com.fortytwogroup.external.MockPaymentSystem;
 import com.fortytwogroup.external.MockVerificationService;
-import com.fortytwogroup.model.Booking;
 import com.fortytwogroup.model.Performance;
-import com.fortytwogroup.model.Student;
 import com.fortytwogroup.view.TextUserInterface;
+
 import java.util.ArrayList;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;

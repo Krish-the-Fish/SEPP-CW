@@ -5,18 +5,13 @@ import com.fortytwogroup.controller.EventPerformanceController;
 import com.fortytwogroup.controller.MenuController;
 import com.fortytwogroup.controller.UserController;
 import com.fortytwogroup.external.MockVerificationService;
-import com.fortytwogroup.model.*;
-import com.fortytwogroup.model.enums.BookingStatus;
 import com.fortytwogroup.view.TextUserInterface;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.MockedStatic;
-import org.mockito.Mockito;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.Mockito.verify;

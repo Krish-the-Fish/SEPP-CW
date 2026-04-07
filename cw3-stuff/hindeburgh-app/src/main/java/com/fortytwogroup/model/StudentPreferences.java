@@ -1,7 +1,6 @@
 package com.fortytwogroup.model;
 
-import java.util.Arrays;
-import java.util.List;
+
 
 public class StudentPreferences {
   public boolean preferMusicEvents;
