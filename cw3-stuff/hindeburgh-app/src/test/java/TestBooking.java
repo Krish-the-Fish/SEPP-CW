@@ -1,4 +1,5 @@
 import com.fortytwogroup.model.Booking;
+import com.fortytwogroup.model.Event;
 import com.fortytwogroup.model.Performance;
 import com.fortytwogroup.model.Student;
 import com.fortytwogroup.model.enums.BookingStatus;
@@ -94,16 +95,52 @@ public class TestBooking {
 
     @Test
     void checkBookedByStudent() {
+        Student student = mock(Student.class);
+        when(student.getEmail()).thenReturn("student@school.com");
+        when(student.getPhoneNumber()).thenReturn(123456789);
+        Performance performance = mock(Performance.class);
+        Booking booking = new Booking(1, 2, 20.0, student, performance);
 
+        assertTrue(booking.checkBookedByStudent("student@school.com"));
+        assertFalse(booking.checkBookedByStudent("other@school.com"));
     }
 
     @Test
     void getStudentDetails() {
+        Student student = mock(Student.class);
+        when(student.getEmail()).thenReturn("student@school.com");
+        when(student.getPhoneNumber()).thenReturn(123456789);
+        Performance performance = mock(Performance.class);
+        Booking booking = new Booking(1, 2, 20.0, student, performance);
 
+        String expected = "Student email: student@school.com\nStudent phone: 123456789";
+
+        assertEquals(expected, booking.getStudentDetails());
     }
+
 
     @Test
     void generateBookingRecord() {
+        Student student = mock(Student.class);
+        when(student.getName()).thenReturn("John");
+        when(student.getEmail()).thenReturn("student@school.com");
+        when(student.getPhoneNumber()).thenReturn(123456789);
 
+        Event event = mock(Event.class);
+        when(event.toString()).thenReturn("EventData");
+
+        Performance performance = mock(Performance.class);
+        when(performance.toStringSensitive()).thenReturn("PerformanceData");
+        when(performance.getEvent()).thenReturn(event);
+
+        Booking booking = new Booking(1, 2, 20.0, student, performance);
+
+        String expected = "Student name: John\n" +
+            "Student email: student@school.com\n" +
+            "Student phone number123456789\n" +
+            "PerformanceData\n" +
+            "EventData\n";
+
+        assertEquals(expected, booking.generateBookingRecord());
     }
 }

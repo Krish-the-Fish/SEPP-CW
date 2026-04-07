@@ -48,7 +48,9 @@ public class EventPerformanceController extends Controller {
     this.performances = performances;
   }
 
-
+  public Collection<Performance> getPerformances() {
+    return this.performances;
+  }
 
   public void createEvent() {
     boolean userIsEP = super.checkCurrentUserIsEntertainmentProvider();
@@ -242,7 +244,6 @@ public class EventPerformanceController extends Controller {
       this.performances.addAll(event.getPerformancesCollection());
 
 
-
     }
 
   }
@@ -308,7 +309,18 @@ public class EventPerformanceController extends Controller {
   }
 
   public void viewPerformance() {
-    long performanceId = Long.parseLong(textUserInterface.getInput("Enter performance ID: "));
+
+    String performanceIdString = textUserInterface.getInput("Enter performance ID: ");
+    long performanceId;
+    try{
+      
+      performanceId = Long.parseLong(performanceIdString);
+    
+    } catch (NumberFormatException e){
+      textUserInterface.displayError("ID must be a positive integer");
+      return;
+    }
+
     Performance p = getPerformanceByID(performanceId);
 
 
@@ -517,14 +529,14 @@ public class EventPerformanceController extends Controller {
 
       // check input is not bigger than a double can store
       if (Double.isInfinite(sponsorshipAmount)) {
-        textUserInterface.displayError("Ticket price entered is too high");
+        textUserInterface.displayError("Sponsorship amount entered is too high");
         continue;
       }
       // Need toString to avoid precision being messed up when parsed and wrapped
       BigDecimal ticketPriceBigDecimal = new BigDecimal(Double.toString(sponsorshipAmount));
       if (ticketPriceBigDecimal.scale() > 2){
         textUserInterface.displayError(
-            "Ticket price cannot have more than 2 decimal places");
+            "Sponsorship amount cannot have more than 2 decimal places");
         continue;
       }
 
@@ -535,6 +547,7 @@ public class EventPerformanceController extends Controller {
         continue;
       }
       else {
+        isTicketed = performanceToSponsor.checkIfEventIsTicketed();
         possible = checkIfSponsorshipPossible(performanceToSponsor, sponsorshipAmount);
       }
     }

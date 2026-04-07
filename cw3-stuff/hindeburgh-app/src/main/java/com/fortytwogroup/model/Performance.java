@@ -150,7 +150,7 @@ public class Performance {
       return 0;
     }
 
-    double discountPerTicket= sponsorshipAmountRemaining/(numTicketsTotal - numTicketsSold);
+    double discountPerTicket = sponsorshipAmountRemaining/(numTicketsTotal - numTicketsSold);
     return discountPerTicket;
   }
 
@@ -286,10 +286,20 @@ public class Performance {
     return event;
   }
 
+  // getter to make system test implementation easier
+  public boolean getIsSponsored() {
+    return isSponsored;
+  }
+
 
   // public getter for numTicketsSold
   public int getNumTicketsSold() {
     return numTicketsSold;
+  }
+
+  // getter to make system test easier to implement
+  public PerformanceStatus getStatus() {
+    return status;
   }
 
   public void setNumTicketsSold(int newTicketsSoldValue) {

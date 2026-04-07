@@ -67,8 +67,13 @@ public class Booking {
    * Method should only be called by BookingController
    */
   public void cancelPaymentFailed() {
+    // defensive check
+    if (!(this.status == BookingStatus.ACTIVE)) {
+      return;
+    }
+
     // update status of booking
-    status = BookingStatus.PAYMENT_FAILED;
+    this.status = BookingStatus.PAYMENT_FAILED;
   }
 
   public void cancelByProvider() {
@@ -82,11 +87,11 @@ public class Booking {
 
   public boolean checkBookedByStudent(String email) {
     String studentDetails = getStudentDetails();
-    int startIndex = studentDetails.indexOf("Student email: ");
+    int startIndex = studentDetails.indexOf("Student email: ") + "Student email: ".length();
     int endIndex = studentDetails.indexOf("\nStudent phone: ");
-    String studentEmail = getStudentDetails().substring(startIndex, endIndex);
-    
-    return (studentEmail.equals(email));
+    String studentEmail = studentDetails.substring(startIndex, endIndex);
+
+    return studentEmail.equals(email);
   }
 
   public String getStudentDetails() {

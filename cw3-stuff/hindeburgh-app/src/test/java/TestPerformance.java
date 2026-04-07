@@ -190,8 +190,9 @@ public class TestPerformance {
         Booking booking = mock(Booking.class);
 
         when(booking.getNumTickets()).thenReturn(1);
-        performance.addBooking(booking);
+        when(booking.getStatus()).thenReturn(BookingStatus.ACTIVE);
 
+        performance.addBooking(booking);
         boolean result = performance.hasActiveBookings();
 
         assertTrue(result, "A valid event with active bookings should return true");

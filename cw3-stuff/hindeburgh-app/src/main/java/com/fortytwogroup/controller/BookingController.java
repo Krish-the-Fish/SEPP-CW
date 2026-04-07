@@ -248,6 +248,7 @@ public class BookingController extends Controller {
   public void cancelBooking() {
     if (!(checkCurrentUserIsStudent() || checkCurrentUserIsEntertainmentProvider())){
       textUserInterface.displayError("Only students and entertainment providers can cancel bookings");
+      return;
     }
 
     Long bookingNumber;
@@ -289,6 +290,9 @@ public class BookingController extends Controller {
     if (refundSuccessful) {
       if (checkCurrentUserIsStudent()){cancelledBooking.cancelByStudent();}
       else if (checkCurrentUserIsEntertainmentProvider()) {cancelledBooking.cancelByProvider();}
+    }
+    else{
+      textUserInterface.displayError("Error: Refund failure");
     }
 
   }
