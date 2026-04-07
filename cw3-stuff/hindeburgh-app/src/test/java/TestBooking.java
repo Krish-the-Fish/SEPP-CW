@@ -93,17 +93,20 @@ public class TestBooking {
     }
 
     @Test
-    void checkBookedByStudent() {
+    void checkBookedByStudent_true() {
+        when(mockStudent.getEmail()).thenReturn("email@email.com");
+        when(mockStudent.getPhoneNumber()).thenReturn(98527355);
+        boolean result = booking.checkBookedByStudent("email@email.com");
 
+        assertTrue(result, "Booking should be booked by the given student");
     }
 
     @Test
-    void getStudentDetails() {
+    void checkBookedByStudent_false() {
+        when(mockStudent.getEmail()).thenReturn("differentstudent@email.com");
+        when(mockStudent.getPhoneNumber()).thenReturn(98527355);
+        boolean result = booking.checkBookedByStudent("email@email.com");
 
-    }
-
-    @Test
-    void generateBookingRecord() {
-
+        assertFalse(result, "Booking should not have been booked by the given student");
     }
 }
